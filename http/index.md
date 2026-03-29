@@ -1,7 +1,5 @@
 # HTTP
 
--   FIXME
-
 ## Start with Something Simple
 
 ```{data-file="get_remote.py"}
@@ -573,5 +571,89 @@ class RequestHandler(BaseHTTPRequestHandler):
     `status_code` (set to 400)
     and `error_message` (set to something informative).
     Explain why the server should return JSON rather than HTML in the case of an error.
+
+</section>
+
+## Why HTTP Is Not Enough
+
+-   HTTP sends everything as plain text
+    -   Any router or network device between client and server can read or modify data in transit
+    -   This is called a [man-in-the-middle attack](g:mitm_attack)
+-   [HTTPS](g:https) wraps HTTP inside [TLS](g:tls) (Transport Layer Security)
+    -   Formerly called SSL; the two terms are often used interchangeably
+
+## The TLS Handshake
+
+-   Before any HTTP data flows, client and server negotiate a secure channel
+
+<figure id="f:http_tls_handshake">
+  <img src="tls_handshake.svg" alt="Steps in a TLS handshake"/>
+  <figcaption>Figure 3: The TLS handshake</figcaption>
+</figure>
+
+-   Steps (simplified):
+    1.  Client connects and says "I want TLS" and lists the cipher suites it supports
+    1.  Server responds with its [certificate](g:certificate) and chosen cipher suite
+    1.  Client checks that the certificate is signed by a trusted [certificate authority](g:certificate_authority) (CA)
+    1.  Both sides derive a shared [session key](g:session_key) using public-key cryptography
+    1.  All subsequent HTTP traffic is encrypted with that session key
+-   The certificate proves the server is who it claims to be
+    -   Without this, an attacker could intercept the connection and impersonate the server
+
+## What Is a Certificate?
+
+-   A certificate is a file containing:
+    -   The server's public key
+    -   The [subject](g:certificate_subject): the domain name the certificate belongs to
+    -   Validity dates (not before, not after)
+    -   The [issuer](g:certificate_issuer): the CA that signed the certificate
+    -   A digital signature from the issuer that ties all of the above together
+-   Browsers and operating systems ship with a list of trusted root CAs
+    -   If the certificate's chain of signatures leads back to one of those, the connection is trusted
+-   See the [Certificates](@/cert/) chapter for hands-on certificate creation
+
+## HTTPS with `requests`
+
+-   `requests` verifies TLS certificates by default — no extra work needed
+
+```{data-file="get_https.py"}
+import requests
+
+response = requests.get("https://example.com/")
+print(f"status code: {response.status_code}")
+```
+
+-   To provide a custom CA bundle (needed when testing with a self-signed certificate):
+
+```{data-file="get_https_custom_ca.py"}
+import requests
+
+response = requests.get("https://localhost:4443/", verify="/path/to/ca.pem")
+print(f"status code: {response.status_code}")
+```
+
+-   To disable verification entirely — only ever do this in a throwaway test:
+
+```{data-file="get_https_no_verify.py"}
+import requests
+import urllib3
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+response = requests.get("https://localhost:4443/", verify=False)
+print(f"status code: {response.status_code}")
+```
+
+-   `requests` bundles `certifi`, a curated set of trusted root CAs
+    -   Used automatically; update with `uv add --upgrade certifi` if certificates stop validating
+
+<section class="exercise" markdown="1">
+
+## Exercise: Certificate Errors
+
+1.  What Python exception does `requests` raise when it cannot verify a server's certificate?
+    Write a short script that catches that specific exception and prints a useful error message.
+
+1.  What does the `-k` flag do in `curl`?
+    Why would you not use it in a script that runs in production?
 
 </section>

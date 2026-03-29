@@ -124,7 +124,7 @@ GEM_HOME
 
 -   Many tools rely on variables to manage configuration
     -   [NVM][nvm] defines 4, [Conda][conda] defines 8
-    -   No guarantee that their names don't [%g name_collision "collide" %]
+    -   No guarantee that their names don't [collide](g:name_collision)
 
 <section class="exercise" markdown="1">
 
@@ -204,10 +204,10 @@ echo $PATH | tr : '\n' | head -n 5
 ```
 ```{data-file="change_path.out"}
 /tmp/bin
-/Users/gregwilson/google-cloud-sdk/bin
-/Users/gregwilson/conda/envs/sys/bin
-/Users/gregwilson/conda/condabin
-/Users/gregwilson/.gem/ruby/3.1.2/bin
+/Users/tut/google-cloud-sdk/bin
+/Users/tut/conda/envs/sys/bin
+/Users/tut/conda/condabin
+/Users/tut/.gem/ruby/3.1.2/bin
 ```
 
 <section class="exercise" markdown="1">
@@ -232,7 +232,7 @@ complicated operations should be done in Python rather than in the shell.
 -   Bash shell runs commands in `~/.bash_profile` for login shells
 -   Bash shell runs commands in `~/.bashrc` for interactive shells
 -   Yes, the terminology is confusing
--   Common to have `~/.bash_profile` [%g source_shell "source" %] `~/.bashrc`
+-   Common to have `~/.bash_profile` [source](g:source_shell) `~/.bashrc`
     -   I.e., run those commands in the current shell
 
 ```{data-file="source_bashrc.sh"}
@@ -253,3 +253,61 @@ wc -l $(ls src/*.text)
        6 src/kill_process.text
       30 total
 ```
+
+## Security and Environment Variables
+
+-   Environment variables look harmless but can expose secrets
+-   `env` prints every environment variable in the current process
+    -   Any secret set this way is visible to the user and to subprocesses
+-   On Linux, `/proc/<pid>/environ` exposes a process's full environment
+    -   Readable by the process owner and by root
+-   `ps -E` (macOS) or `ps auxe` (Linux) can show environment variables for running processes
+    -   Any user on a shared machine can inspect processes they can see
+
+```{data-file="show_secret.sh"}
+export SECRET_TOKEN=abc123
+python src/show_secret.py
+```
+```{data-file="show_secret.py"}
+import os
+
+token = os.environ.get("SECRET_TOKEN", "not set")
+print(f"token: {token}")
+```
+
+-   Three rules for secrets in environment variables:
+    1.  Never put a real secret directly in a shell script that is checked into version control
+    1.  Never commit a `.env` file that contains real secrets
+    1.  Use `os.environ.get("NAME")` with no fallback default so a missing variable fails loudly
+
+## The `.env` File Convention
+
+-   Common practice: store secrets in a file called `.env` that is never committed
+-   `python-dotenv` loads that file into `os.environ` automatically
+
+```{data-file="dotenv_example.py"}
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+token = os.environ.get("SECRET_TOKEN")
+if token is None:
+    raise RuntimeError("SECRET_TOKEN is not set")
+print(f"token: {token}")
+```
+
+-   Add `.env` to `.gitignore` immediately when creating a new project
+-   A `.env.example` file with fake values and comments is safe to commit as documentation
+
+<section class="exercise" markdown="1">
+
+## Exercise: Leaky Processes
+
+1.  Set an environment variable called `MY_SECRET` to any value in your shell,
+    then use `ps -E` (macOS) or `ps auxe` (Linux) to check whether other processes can see it.
+    What do you observe?
+
+1.  Why is it safer to pass secrets in files that only the service account can read
+    than as environment variables?
+
+</section>

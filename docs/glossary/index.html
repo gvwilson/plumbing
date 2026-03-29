@@ -6,8 +6,6 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Glossary</title>
 <meta content="The Sudonomicon" name="description"/>
-<meta content="#f8f8f8" media="(prefers-color-scheme: light)" name="theme-color"/>
-<meta content="#1a1a1a" media="(prefers-color-scheme: dark)" name="theme-color"/>
 <link href="../_static/favicon.ico" rel="icon" type="image/x-icon"/>
 <link href="../_static/pygments.css" rel="stylesheet" type="text/css"/>
 <link href="../_static/page.css" rel="stylesheet" type="text/css"/>
@@ -17,33 +15,36 @@
 <nav aria-label="Site navigation">
 <a href="../">The Sudonomicon</a>
 <span aria-hidden="true">·</span>
-<span class="dropdown">
+<div class="dropdown">
 <button aria-controls="nav-lessons" aria-haspopup="true">Lessons</button>
-<ul class="dropdown-content" id="nav-lessons" role="list">
+<ul class="dropdown-content" id="nav-lessons">
 <li><a href="../intro/">Introduction</a></li>
 <li><a href="../fs/">The Filesystem</a></li>
 <li><a href="../proc/">Processes</a></li>
 <li><a href="../jobs/">Running Jobs</a></li>
+<li><a href="../logging/">Logging</a></li>
 <li><a href="../http/">HTTP</a></li>
 <li><a href="../auth/">Authentication</a></li>
 <li><a href="../var/">Shell Variables</a></li>
 <li><a href="../packenv/">Packages and Virtual Environments</a></li>
 <li><a href="../network/">Networking</a></li>
+<li><a href="../cert/">Certificates</a></li>
+<li><a href="../ssh/">SSH</a></li>
 <li><a href="../dock/">Virtualization</a></li>
 <li><a href="../finale/">Conclusion</a></li>
 </ul>
-</span>
+</div>
 <span aria-hidden="true">·</span>
-<span class="dropdown">
+<div class="dropdown">
 <button aria-controls="nav-appendices" aria-haspopup="true">Appendices</button>
-<ul class="dropdown-content" id="nav-appendices" role="list">
+<ul class="dropdown-content" id="nav-appendices">
 <li><a href="../license/">License</a></li>
 <li><a href="../conduct/">Code of Conduct</a></li>
 <li><a href="../contributing/">Contributing</a></li>
 <li><a href="../bibliography/">Bibliography</a></li>
 <li><a class="active" href="../glossary/">Glossary</a></li>
 </ul>
-</span>
+</div>
 </nav>
 <main id="main-content">
 <h1>Glossary</h1>
@@ -55,6 +56,14 @@
 <dd>A standard way to represent the characters commonly used in the Western
 European languages as 7-bit integers, now largely superceded by
 <a href="#unicode">Unicode</a>.</dd>
+<dt><span id="allocation_block">allocation block</span></dt>
+<dd>The minimum unit of disk space that a <a href="#filesystem">filesystem</a> allocates to a file.
+Even a file that contains a single byte occupies one full allocation block,
+so a file's actual disk usage is always a multiple of the block size.</dd>
+<dt><span id="auth_challenge">authentication challenge</span></dt>
+<dd>A piece of data sent by a server to a client that the client must transform
+using a secret (such as a <a href="#private_key">private key</a>) to prove its identity
+without transmitting the secret itself.</dd>
 <dt><span id="authentication">authentication</span></dt>
 <dd>The act of establishing one's identity.</dd>
 <dt><span id="authorization">authorization</span></dt>
@@ -90,6 +99,18 @@ or the data being stored.</dd>
 some later point.</dd>
 <dt><span id="capability">capability</span></dt>
 <dd>FIXME</dd>
+<dt><span id="certificate">certificate</span></dt>
+<dd>A digitally-signed document that binds a public key to an identity (such as a domain name).
+Used in <a href="#tls">TLS</a> to allow clients to verify that they are communicating
+with the intended server.</dd>
+<dt><span id="certificate_authority">certificate authority (CA)</span></dt>
+<dd>An organization trusted to sign <a href="#certificate">certificates</a>,
+vouching that the public key in the certificate belongs to the claimed identity.
+Browsers and operating systems ship with a list of trusted root CAs.</dd>
+<dt><span id="certificate_issuer">certificate issuer</span></dt>
+<dd>The <a href="#certificate_authority">certificate authority</a> that signed and issued a <a href="#certificate">certificate</a>.</dd>
+<dt><span id="certificate_subject">certificate subject</span></dt>
+<dd>The identity (typically a domain name or organization) that a <a href="#certificate">certificate</a> belongs to.</dd>
 <dt><span id="character_device">"character device"</span></dt>
 <dd>FIXME</dd>
 <dt><span id="character_encoding">character encoding</span></dt>
@@ -114,8 +135,20 @@ which is called its <a href="#parent_process">parent process</a>.</dd>
 <dt><span id="daemon">daemon</span></dt>
 <dd>A long-lived process managed by an operating system
 that provides a service such as printer management to other processes.</dd>
+<dt><span id="dependency_conflict">dependency conflict</span></dt>
+<dd>The situation that arises when two packages require incompatible versions of a third package.</dd>
 <dt><span id="device">device</span></dt>
 <dd>FIXME</dd>
+<dt><span id="digital_certificate">digital certificate</span></dt>
+<dd>A digitally-signed document that binds a <a href="#public_key">public key</a> to an identity.
+See also <a href="#certificate">certificate</a>.</dd>
+<dt><span id="digital_signature">digital signature</span></dt>
+<dd>A value computed from some data using a <a href="#private_key">private key</a> that allows anyone
+with the corresponding <a href="#public_key">public key</a> to verify that the data has not been
+tampered with and was signed by the holder of the private key.</dd>
+<dt><span id="dns">Domain Name System (DNS)</span></dt>
+<dd>The distributed database that translates human-readable hostnames such as
+<code>example.com</code> into numeric IP addresses.</dd>
 <dt><span id="docker">Docker</span></dt>
 <dd>A tool for creating and managing isolated computing environments.</dd>
 <dt><span id="docker_container">Docker container</span></dt>
@@ -168,6 +201,13 @@ typically in order to run a new program.</dd>
 <dl>
 <dt><span id="hash">hash</span></dt>
 <dd>FIXME</dd>
+<dt><span id="hmac">HMAC (Hash-based Message Authentication Code)</span></dt>
+<dd>A type of message authentication code that combines a cryptographic hash function
+with a secret key, used to verify both the integrity and authenticity of a message.</dd>
+<dt><span id="host_key">host key</span></dt>
+<dd>A <a href="#key_pair">key pair</a> that uniquely identifies an SSH server.
+Clients store the server's public host key after the first connection
+and reject connections if it changes unexpectedly.</dd>
 <dt><span id="hostname">hostname</span></dt>
 <dd>A human-readable name for a computer on a network.</dd>
 <dt><span id="http">HTTP</span></dt>
@@ -196,20 +236,39 @@ back to a <a href="#client">client</a> in reply to a <a href="#http_request">req
 such as 200 (OK),
 404 (not found),
 or 500 (internal server error).</dd>
+<dt><span id="https">HTTPS</span></dt>
+<dd>HTTP over <a href="#tls">TLS</a>. Encrypts all traffic between client and server
+and allows the client to verify the server's identity using a <a href="#certificate">certificate</a>.</dd>
 </dl>
 <h2>I</h2>
 <dl>
 <dt><span id="inode">inode</span></dt>
 <dd>FIXME</dd>
+<dt><span id="internal_fragmentation">internal fragmentation</span></dt>
+<dd>The disk space wasted when a file does not completely fill its last <a href="#allocation_block">allocation block</a>.
+A 1-byte file in a filesystem with 4 KiB blocks wastes 4,095 bytes.</dd>
+<dt><span id="ip_address">IP address</span></dt>
+<dd>A numerical label assigned to each device on a network that uses the Internet Protocol.
+IPv4 addresses are 32 bits (e.g., <code>192.168.1.1</code>); IPv6 addresses are 128 bits.</dd>
 </dl>
 <h2>J</h2>
 <dl>
+<dt><span id="journald">journald</span></dt>
+<dd>The logging daemon that is part of systemd on Linux.
+It collects log messages from the kernel, services, and applications
+and stores them in a structured binary format queryable with <code>journalctl</code>.</dd>
 <dt><span id="json">JavaScript Object Notation (JSON)</span></dt>
 <dd>A way to represent data by combining basic values like numbers
 and character strings in lists and key-value structures. Unlike
 other formats, it is unencumbered by a syntax for writing comments.</dd>
 </dl>
 <h2>K</h2>
+<dl>
+<dt><span id="key_pair">key pair</span></dt>
+<dd>A matched pair of cryptographic keys consisting of a <a href="#private_key">private key</a>,
+which is kept secret, and a <a href="#public_key">public key</a>, which can be shared freely.
+Data encrypted with one key can only be decrypted with the other.</dd>
+</dl>
 <h2>L</h2>
 <dl>
 <dt><span id="link_hard">hard link (in filesystem)</span></dt>
@@ -224,12 +283,28 @@ typically for development purposes.</dd>
 <dt><span id="localhost">localhost</span></dt>
 <dd>A special <a href="#hostname">host name</a> that identifies
 the computer that the software is running on.</dd>
+<dt><span id="log_formatter">log formatter</span></dt>
+<dd>A component of a logging system that controls the text layout of each log message,
+including fields such as timestamp, level, and message text.</dd>
+<dt><span id="log_handler">log handler</span></dt>
+<dd>A component of a logging system that decides where log messages are sent,
+such as to the terminal, a file, or a remote service.</dd>
+<dt><span id="log_level">log level</span></dt>
+<dd>A label indicating the severity or importance of a log message.
+Common levels in order of increasing severity are
+DEBUG, INFO, WARNING, ERROR, and CRITICAL.</dd>
+<dt><span id="logger">logger</span></dt>
+<dd>A named channel through which log messages flow in a structured logging system.
+Loggers can be given different levels and <a href="#log_handler">handlers</a>.</dd>
 </dl>
 <h2>M</h2>
 <dl>
 <dt><span id="mime_type">MIME type</span></dt>
 <dd>A standard that defines types of file content,
 such as <code>text/plain</code> for plain text and <code>image/jpeg</code> for JPEG images.</dd>
+<dt><span id="mitm_attack">man-in-the-middle attack</span></dt>
+<dd>An attack in which an adversary secretly intercepts and possibly alters
+communications between two parties who believe they are talking directly to each other.</dd>
 <dt><span id="mount">mount</span></dt>
 <dd>FIXME</dd>
 </dl>
@@ -252,11 +327,18 @@ Other programs interact with the OS through <a href="#system_call">system calls<
 <dt><span id="parent_process">parent process</span></dt>
 <dd>A <a href="#process">process</a> which has created one or more other processes,
 which are called its <a href="#child_process">child processes</a>.</dd>
+<dt><span id="passphrase">passphrase</span></dt>
+<dd>A password used to encrypt a <a href="#private_key">private key</a> when it is stored on disk.
+Using a passphrase means a stolen key file cannot be used without it.</dd>
 <dt><span id="path">path (in filesystem)</span></dt>
 <dd>An expression that refers to a file or directory in a filesystem.</dd>
 <dt><span id="port">port</span></dt>
 <dd>A logical endpoint for communication,
 like a phone number in an office building.</dd>
+<dt><span id="private_key">private key</span></dt>
+<dd>The secret half of a <a href="#key_pair">key pair</a>.
+The private key must never be shared; it is used to decrypt messages encrypted
+with the corresponding <a href="#public_key">public key</a> or to create <a href="#digital_signature">digital signatures</a>.</dd>
 <dt><span id="process">process</span></dt>
 <dd>A running instance of a program.</dd>
 <dt><span id="process_id">process ID</span></dt>
@@ -264,6 +346,10 @@ like a phone number in an office building.</dd>
 <dt><span id="process_tree">process tree</span></dt>
 <dd>The set of processes created directly or indirectly by one process
 and the <a href="#parent_process">parent</a>-<a href="#child_process">child</a> relationships between them.</dd>
+<dt><span id="public_key">public key</span></dt>
+<dd>The non-secret half of a <a href="#key_pair">key pair</a>.
+The public key can be shared freely; it is used to encrypt messages intended for
+the holder of the corresponding <a href="#private_key">private key</a> or to verify <a href="#digital_signature">digital signatures</a>.</dd>
 </dl>
 <h2>Q</h2>
 <dl>
@@ -278,6 +364,9 @@ and the <a href="#parent_process">parent</a>-<a href="#child_process">child</a> 
 <dd>To continue the execution of a <a href="#suspend_process">suspended</a> <a href="#process">process</a>.</dd>
 <dt><span id="resolve_path">resolve (a path)</span></dt>
 <dd>To translate a <a href="#path">path</a> into the canonical name of the file or directory it refers to.</dd>
+<dt><span id="robustness">robustness</span></dt>
+<dd>The property of a program or system that continues to function correctly
+across a wide range of inputs, conditions, and execution orderings.</dd>
 <dt><span id="root_directory">root directory</span></dt>
 <dd>The top-most directory in the <a href="#filesystem">filesystem</a>
 that contains all other directories and files.</dd>
@@ -286,11 +375,20 @@ that contains all other directories and files.</dd>
 </dl>
 <h2>S</h2>
 <dl>
+<dt><span id="salt">salt</span></dt>
+<dd>A random value added to a password before hashing it,
+so that two users with the same password will have different stored hashes
+and precomputed rainbow-table attacks are ineffective.</dd>
 <dt><span id="sandbox">sandbox</span></dt>
 <dd>An isolated computing environment in which operations can be executed safely.</dd>
 <dt><span id="server">server</span></dt>
 <dd>A program that waits for requests from <a href="#client">clients</a>
 and sends them data in response.</dd>
+<dt><span id="session_key">session key</span></dt>
+<dd>A symmetric encryption key generated for a single <a href="#tls">TLS</a> session
+and discarded afterward.
+Both client and server derive the same session key during the <a href="#tls">TLS</a> handshake
+without transmitting it directly.</dd>
 <dt><span id="shell">shell</span></dt>
 <dd>A program that allows a user to interact with a computer's operating system
 and other programs through a textual user interface.</dd>
@@ -304,12 +402,29 @@ normal execution, such as an interrupt or a timer notification.</dd>
 <dt><span id="signal_handler">signal handler</span></dt>
 <dd>A <a href="#callback_function">callback function</a> that is called when
 a <a href="#process">process</a> receives a <a href="#signal">signal</a>.</dd>
+<dt><span id="socket">socket</span></dt>
+<dd>An endpoint for two-way communication between processes,
+either on the same machine or across a network.
+Sockets make network I/O look similar to file I/O.</dd>
 <dt><span id="source_shell">source (in shell script)</span></dt>
 <dd>To run one <a href="#shell_script">shell script</a> in the same process as another.</dd>
+<dt><span id="ssh">SSH (Secure Shell)</span></dt>
+<dd>A network protocol and tool for logging into remote machines and running commands on them.
+All traffic is encrypted, and the server's identity is verified using a <a href="#host_key">host key</a>.</dd>
+<dt><span id="ssh_tunnel">SSH tunnel</span></dt>
+<dd>A secure channel created by SSH that forwards network traffic from a local port
+to a port on (or reachable from) the remote machine.</dd>
 <dt><span id="static_file">static file</span></dt>
 <dd>Web site content that is stored as a file on disk that is served as-is.
 Serving static files is usually faster than generating <a href="#dynamic_content">dynamic content</a>,
 but can only be done if what's wanted is unchanging and known in advance.</dd>
+<dt><span id="stream">stream</span></dt>
+<dd>A sequence of data elements made available one at a time,
+such as the bytes read from a file or received over a network connection.</dd>
+<dt><span id="structured_logging">structured logging</span></dt>
+<dd>A logging approach in which each log record is written as a machine-readable
+data structure (typically JSON) rather than as free-form text,
+making logs easier to filter and analyze programmatically.</dd>
 <dt><span id="superuser">superuser</span></dt>
 <dd>An administrative account on a computer that has permission
 to see, change, and run everything.</dd>
@@ -320,6 +435,15 @@ can <a href="#resume_process">resume</a> later.</dd>
 <dd>A call to one of the functions provided by an <a href="#operating_system">operating system</a>.</dd>
 </dl>
 <h2>T</h2>
+<dl>
+<dt><span id="tls">TLS (Transport Layer Security)</span></dt>
+<dd>A cryptographic protocol that provides encrypted, authenticated communication
+over a network. Used by <a href="#https">HTTPS</a> and <a href="#ssh">SSH</a>, among others.
+Formerly known as SSL.</dd>
+<dt><span id="tls_ssl">TLS/SSL</span></dt>
+<dd>See <a href="#tls">TLS</a>. SSL (Secure Sockets Layer) is the older name for the protocol
+now standardized as TLS; the two terms are often used interchangeably.</dd>
+</dl>
 <h2>U</h2>
 <dl>
 <dt><span id="uid">user ID (UID)</span></dt>
@@ -346,6 +470,10 @@ and other virtual environments.</dd>
 <dl>
 <dt><span id="web_scraping">web scraping</span></dt>
 <dd>The act of extracting data from HTML pages on the web.</dd>
+<dt><span id="wrap_object">wrap (an object)</span></dt>
+<dd>To create a new object that delegates most operations to an existing object
+while adding or modifying specific behavior,
+such as wrapping a plain socket with a TLS layer.</dd>
 </dl>
 <h2>X</h2>
 <h2>Y</h2>

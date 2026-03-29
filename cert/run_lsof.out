@@ -1,0 +1,10 @@
+COMMAND     PID       USER   FD   TYPE             DEVICE SIZE/OFF NODE 
+corespeec   585 tut    3u  IPv6 0x5f5fb0f69522963b      0t0  TCP 
+jetbrains  1609 tut   59u  IPv6 0x5f5fb0f69523863b      0t0  TCP 
+PowerChim 46752 tut    3u  IPv6 0x5f5fb0f69524ae3b      0t0  TCP 
+PowerChim 46752 tut    6u  IPv6 0x5f5fb0f695228e3b      0t0  TCP 
+Google    53670 tut   22u  IPv6 0x5f5fb0f695246e3b      0t0  TCP 
+Google    53670 tut   24u  IPv6 0x5f5fb0f69523d63b      0t0  TCP 
+Google    53670 tut   29u  IPv4 0x5f5fb0fb588afdd3      0t0  TCP 
+Google    53670 tut   33u  IPv6 0x5f5fb0f69524663b      0t0  TCP 
+Google    53670 tut   34u  IPv6 0x5f5fb0f69523de3b      0t0  TCP 

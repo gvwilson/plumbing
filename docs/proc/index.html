@@ -6,8 +6,6 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Processes</title>
 <meta content="The Sudonomicon" name="description"/>
-<meta content="#f8f8f8" media="(prefers-color-scheme: light)" name="theme-color"/>
-<meta content="#1a1a1a" media="(prefers-color-scheme: dark)" name="theme-color"/>
 <link href="../_static/favicon.ico" rel="icon" type="image/x-icon"/>
 <link href="../_static/pygments.css" rel="stylesheet" type="text/css"/>
 <link href="../_static/page.css" rel="stylesheet" type="text/css"/>
@@ -17,33 +15,36 @@
 <nav aria-label="Site navigation">
 <a href="../">The Sudonomicon</a>
 <span aria-hidden="true">·</span>
-<span class="dropdown">
+<div class="dropdown">
 <button aria-controls="nav-lessons" aria-haspopup="true">Lessons</button>
-<ul class="dropdown-content" id="nav-lessons" role="list">
+<ul class="dropdown-content" id="nav-lessons">
 <li><a href="../intro/">Introduction</a></li>
 <li><a href="../fs/">The Filesystem</a></li>
 <li><a class="active" href="../proc/">Processes</a></li>
 <li><a href="../jobs/">Running Jobs</a></li>
+<li><a href="../logging/">Logging</a></li>
 <li><a href="../http/">HTTP</a></li>
 <li><a href="../auth/">Authentication</a></li>
 <li><a href="../var/">Shell Variables</a></li>
 <li><a href="../packenv/">Packages and Virtual Environments</a></li>
 <li><a href="../network/">Networking</a></li>
+<li><a href="../cert/">Certificates</a></li>
+<li><a href="../ssh/">SSH</a></li>
 <li><a href="../dock/">Virtualization</a></li>
 <li><a href="../finale/">Conclusion</a></li>
 </ul>
-</span>
+</div>
 <span aria-hidden="true">·</span>
-<span class="dropdown">
+<div class="dropdown">
 <button aria-controls="nav-appendices" aria-haspopup="true">Appendices</button>
-<ul class="dropdown-content" id="nav-appendices" role="list">
+<ul class="dropdown-content" id="nav-appendices">
 <li><a href="../license/">License</a></li>
 <li><a href="../conduct/">Code of Conduct</a></li>
 <li><a href="../contributing/">Contributing</a></li>
 <li><a href="../bibliography/">Bibliography</a></li>
 <li><a href="../glossary/">Glossary</a></li>
 </ul>
-</span>
+</div>
 </nav>
 <main id="main-content">
 <h1>Processes</h1>
@@ -76,7 +77,7 @@
 <div class="codehilite"><pre class="" tabindex="0"><span></span><code>ps -a -l
 </code></pre></div>
 <div class="codehilite"><pre class="" tabindex="0"><span></span><code>  UID   PID  PPID        F CPU PRI NI        SZ    RSS       TTY       TIME CMD
-    0 13215 83470     4106   0  31  0 408655632   9504   ttys001    0:00.02 login -pfl gvwilson /
+    0 13215 83470     4106   0  31  0 408655632   9504   ttys001    0:00.02 login -pfl tut /
   501 13216 13215     4006   0  31  0 408795632   5424   ttys001    0:00.04 -bash
   501 13569 13216     4046   0  31  0 408895008  20864   ttys001    0:00.10 python -m http.server
     0 13577 13216     4106   0  31  0 408766128   1888   ttys001    0:00.01 ps -a -l
@@ -116,11 +117,11 @@
 </li>
 <li><code>pstree $$</code> to see <a href="../glossary/#process_tree">process tree</a></li>
 </ul>
-<div class="codehilite"><pre class="" tabindex="0"><span></span><code>-+= 34628 gvwilson -bash
- |--= 38255 gvwilson emacs 03_proc/index.md
- |-+= 38697 gvwilson pstree 34628
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>-+= 34628 tut -bash
+ |--= 38255 tut emacs 03_proc/index.md
+ |-+= 38697 tut pstree 34628
  | \--- 38699 root ps -axwwo user,pid,ppid,pgid,command
- \--- 38698 gvwilson pbcopy
+ \--- 38698 tut pbcopy
 </code></pre></div>
 <h2>Signals</h2>
 <ul>

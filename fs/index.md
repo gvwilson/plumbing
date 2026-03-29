@@ -49,7 +49,10 @@ total 8
     -   Design pattern: always generate and manage your own IDs
 -   Number of blocks
     -   Each block is typically 4kbyte, but that may vary
-    -   FIXME: why 8 blocks for bibliography which is only 174 bytes?
+    -   174 bytes of data, but 8 blocks because filesystems allocate space in fixed-size units
+        -   `ls -s` reports in 512-byte units; 8 × 512 = 4,096 bytes = one 4 KiB [allocation block](g:allocation_block)
+        -   Even a 1-byte file uses one full block: the gap between bytes and blocks is [internal fragmentation](g:internal_fragmentation)
+        -   A directory with thousands of tiny files wastes proportionally more space per byte than one with a few large files
 -   Permissions (discussed below)
 -   Number of [hard links](g:link_hard)
     -   I.e., the number of things that point to this file or directory
@@ -143,7 +146,7 @@ groups	nobody everyone localaccounts
 $ echo "original content" > /tmp/somefile.txt
 
 $ ls -l /tmp/somefile.txt
--rw-r--r--  1 gvwilson  staff  17 Apr 20 16:15 /tmp/somefile.txt
+-rw-r--r--  1 tut  staff  17 Apr 20 16:15 /tmp/somefile.txt
 
 $ cat /tmp/somefile.txt
 original content
@@ -151,7 +154,7 @@ original content
 $ chmod u=,g=,o= /tmp/somefile.txt
 
 $ ls -l /tmp/somefile.txt
-----------  1 gvwilson  staff  17 Apr 20 16:15 /tmp/somefile.txt
+----------  1 tut  staff  17 Apr 20 16:15 /tmp/somefile.txt
 
 $ cat /tmp/somefile.txt
 cat: /tmp/somefile.txt: Permission denied
@@ -164,7 +167,7 @@ $ chmod u=rw /tmp/somefile.txt
 $ echo "revised content" > /tmp/somefile.txt
 
 $ ls -l /tmp/somefile.txt
--rw-------  1 gvwilson  staff  16 Apr 20 16:15 /tmp/somefile.txt
+-rw-------  1 tut  staff  16 Apr 20 16:15 /tmp/somefile.txt
 
 $ cat /tmp/somefile.txt
 revised content

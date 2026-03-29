@@ -10,6 +10,16 @@
     European languages as 7-bit integers, now largely superceded by
     [Unicode](#unicode).
 
+<span id="allocation_block">allocation block</span>
+:   The minimum unit of disk space that a [filesystem](#filesystem) allocates to a file.
+    Even a file that contains a single byte occupies one full allocation block,
+    so a file's actual disk usage is always a multiple of the block size.
+
+<span id="auth_challenge">authentication challenge</span>
+:   A piece of data sent by a server to a client that the client must transform
+    using a secret (such as a [private key](#private_key)) to prove its identity
+    without transmitting the secret itself.
+
 <span id="authentication">authentication</span>
 :   The act of establishing one's identity.
 
@@ -55,6 +65,22 @@
 <span id="capability">capability</span>
 :   FIXME
 
+<span id="certificate">certificate</span>
+:   A digitally-signed document that binds a public key to an identity (such as a domain name).
+    Used in [TLS](#tls) to allow clients to verify that they are communicating
+    with the intended server.
+
+<span id="certificate_authority">certificate authority (CA)</span>
+:   An organization trusted to sign [certificates](#certificate),
+    vouching that the public key in the certificate belongs to the claimed identity.
+    Browsers and operating systems ship with a list of trusted root CAs.
+
+<span id="certificate_issuer">certificate issuer</span>
+:   The [certificate authority](#certificate_authority) that signed and issued a [certificate](#certificate).
+
+<span id="certificate_subject">certificate subject</span>
+:   The identity (typically a domain name or organization) that a [certificate](#certificate) belongs to.
+
 <span id="character_device">"character device"</span>
 :   FIXME
 
@@ -87,8 +113,24 @@
 :   A long-lived process managed by an operating system
     that provides a service such as printer management to other processes.
 
+<span id="dependency_conflict">dependency conflict</span>
+:   The situation that arises when two packages require incompatible versions of a third package.
+
 <span id="device">device</span>
 :   FIXME
+
+<span id="digital_certificate">digital certificate</span>
+:   A digitally-signed document that binds a [public key](#public_key) to an identity.
+    See also [certificate](#certificate).
+
+<span id="digital_signature">digital signature</span>
+:   A value computed from some data using a [private key](#private_key) that allows anyone
+    with the corresponding [public key](#public_key) to verify that the data has not been
+    tampered with and was signed by the holder of the private key.
+
+<span id="dns">Domain Name System (DNS)</span>
+:   The distributed database that translates human-readable hostnames such as
+    `example.com` into numeric IP addresses.
 
 <span id="docker">Docker</span>
 :   A tool for creating and managing isolated computing environments.
@@ -154,6 +196,15 @@
 <span id="hash">hash</span>
 :   FIXME
 
+<span id="hmac">HMAC (Hash-based Message Authentication Code)</span>
+:   A type of message authentication code that combines a cryptographic hash function
+    with a secret key, used to verify both the integrity and authenticity of a message.
+
+<span id="host_key">host key</span>
+:   A [key pair](#key_pair) that uniquely identifies an SSH server.
+    Clients store the server's public host key after the first connection
+    and reject connections if it changes unexpectedly.
+
 <span id="hostname">hostname</span>
 :   A human-readable name for a computer on a network.
 
@@ -189,12 +240,29 @@
     404 (not found),
     or 500 (internal server error).
 
+<span id="https">HTTPS</span>
+:   HTTP over [TLS](#tls). Encrypts all traffic between client and server
+    and allows the client to verify the server's identity using a [certificate](#certificate).
+
 ## I
 
 <span id="inode">inode</span>
 :   FIXME
 
+<span id="internal_fragmentation">internal fragmentation</span>
+:   The disk space wasted when a file does not completely fill its last [allocation block](#allocation_block).
+    A 1-byte file in a filesystem with 4 KiB blocks wastes 4,095 bytes.
+
+<span id="ip_address">IP address</span>
+:   A numerical label assigned to each device on a network that uses the Internet Protocol.
+    IPv4 addresses are 32 bits (e.g., `192.168.1.1`); IPv6 addresses are 128 bits.
+
 ## J
+
+<span id="journald">journald</span>
+:   The logging daemon that is part of systemd on Linux.
+    It collects log messages from the kernel, services, and applications
+    and stores them in a structured binary format queryable with `journalctl`.
 
 <span id="json">JavaScript Object Notation (JSON)</span>
 :   A way to represent data by combining basic values like numbers
@@ -202,6 +270,11 @@
     other formats, it is unencumbered by a syntax for writing comments.
 
 ## K
+
+<span id="key_pair">key pair</span>
+:   A matched pair of cryptographic keys consisting of a [private key](#private_key),
+    which is kept secret, and a [public key](#public_key), which can be shared freely.
+    Data encrypted with one key can only be decrypted with the other.
 
 ## L
 
@@ -222,11 +295,32 @@
 :   A special [host name](#hostname) that identifies
     the computer that the software is running on.
 
+<span id="log_formatter">log formatter</span>
+:   A component of a logging system that controls the text layout of each log message,
+    including fields such as timestamp, level, and message text.
+
+<span id="log_handler">log handler</span>
+:   A component of a logging system that decides where log messages are sent,
+    such as to the terminal, a file, or a remote service.
+
+<span id="log_level">log level</span>
+:   A label indicating the severity or importance of a log message.
+    Common levels in order of increasing severity are
+    DEBUG, INFO, WARNING, ERROR, and CRITICAL.
+
+<span id="logger">logger</span>
+:   A named channel through which log messages flow in a structured logging system.
+    Loggers can be given different levels and [handlers](#log_handler).
+
 ## M
 
 <span id="mime_type">MIME type</span>
 :   A standard that defines types of file content,
     such as `text/plain` for plain text and `image/jpeg` for JPEG images.
+
+<span id="mitm_attack">man-in-the-middle attack</span>
+:   An attack in which an adversary secretly intercepts and possibly alters
+    communications between two parties who believe they are talking directly to each other.
 
 <span id="mount">mount</span>
 :   FIXME
@@ -252,12 +346,21 @@
 :   A [process](#process) which has created one or more other processes,
     which are called its [child processes](#child_process).
 
+<span id="passphrase">passphrase</span>
+:   A password used to encrypt a [private key](#private_key) when it is stored on disk.
+    Using a passphrase means a stolen key file cannot be used without it.
+
 <span id="path">path (in filesystem)</span>
 :   An expression that refers to a file or directory in a filesystem.
 
 <span id="port">port</span>
 :   A logical endpoint for communication,
     like a phone number in an office building.
+
+<span id="private_key">private key</span>
+:   The secret half of a [key pair](#key_pair).
+    The private key must never be shared; it is used to decrypt messages encrypted
+    with the corresponding [public key](#public_key) or to create [digital signatures](#digital_signature).
 
 <span id="process">process</span>
 :   A running instance of a program.
@@ -268,6 +371,11 @@
 <span id="process_tree">process tree</span>
 :   The set of processes created directly or indirectly by one process
     and the [parent](#parent_process)-[child](#child_process) relationships between them.
+
+<span id="public_key">public key</span>
+:   The non-secret half of a [key pair](#key_pair).
+    The public key can be shared freely; it is used to encrypt messages intended for
+    the holder of the corresponding [private key](#private_key) or to verify [digital signatures](#digital_signature).
 
 ## Q
 
@@ -285,6 +393,10 @@
 <span id="resolve_path">resolve (a path)</span>
 :   To translate a [path](#path) into the canonical name of the file or directory it refers to.
 
+<span id="robustness">robustness</span>
+:   The property of a program or system that continues to function correctly
+    across a wide range of inputs, conditions, and execution orderings.
+
 <span id="root_directory">root directory</span>
 :   The top-most directory in the [filesystem](#filesystem)
     that contains all other directories and files.
@@ -294,12 +406,23 @@
 
 ## S
 
+<span id="salt">salt</span>
+:   A random value added to a password before hashing it,
+    so that two users with the same password will have different stored hashes
+    and precomputed rainbow-table attacks are ineffective.
+
 <span id="sandbox">sandbox</span>
 :   An isolated computing environment in which operations can be executed safely.
 
 <span id="server">server</span>
 :   A program that waits for requests from [clients](#client)
     and sends them data in response.
+
+<span id="session_key">session key</span>
+:   A symmetric encryption key generated for a single [TLS](#tls) session
+    and discarded afterward.
+    Both client and server derive the same session key during the [TLS](#tls) handshake
+    without transmitting it directly.
 
 <span id="shell">shell</span>
 :   A program that allows a user to interact with a computer's operating system
@@ -319,13 +442,35 @@
 :   A [callback function](#callback_function) that is called when
     a [process](#process) receives a [signal](#signal).
 
+<span id="socket">socket</span>
+:   An endpoint for two-way communication between processes,
+    either on the same machine or across a network.
+    Sockets make network I/O look similar to file I/O.
+
 <span id="source_shell">source (in shell script)</span>
 :   To run one [shell script](#shell_script) in the same process as another.
+
+<span id="ssh">SSH (Secure Shell)</span>
+:   A network protocol and tool for logging into remote machines and running commands on them.
+    All traffic is encrypted, and the server's identity is verified using a [host key](#host_key).
+
+<span id="ssh_tunnel">SSH tunnel</span>
+:   A secure channel created by SSH that forwards network traffic from a local port
+    to a port on (or reachable from) the remote machine.
 
 <span id="static_file">static file</span>
 :   Web site content that is stored as a file on disk that is served as-is.
     Serving static files is usually faster than generating [dynamic content](#dynamic_content),
     but can only be done if what's wanted is unchanging and known in advance.
+
+<span id="stream">stream</span>
+:   A sequence of data elements made available one at a time,
+    such as the bytes read from a file or received over a network connection.
+
+<span id="structured_logging">structured logging</span>
+:   A logging approach in which each log record is written as a machine-readable
+    data structure (typically JSON) rather than as free-form text,
+    making logs easier to filter and analyze programmatically.
 
 <span id="superuser">superuser</span>
 :   An administrative account on a computer that has permission
@@ -339,6 +484,15 @@
 :   A call to one of the functions provided by an [operating system](#operating_system).
 
 ## T
+
+<span id="tls">TLS (Transport Layer Security)</span>
+:   A cryptographic protocol that provides encrypted, authenticated communication
+    over a network. Used by [HTTPS](#https) and [SSH](#ssh), among others.
+    Formerly known as SSL.
+
+<span id="tls_ssl">TLS/SSL</span>
+:   See [TLS](#tls). SSL (Secure Sockets Layer) is the older name for the protocol
+    now standardized as TLS; the two terms are often used interchangeably.
 
 ## U
 
@@ -370,6 +524,11 @@
 
 <span id="web_scraping">web scraping</span>
 :   The act of extracting data from HTML pages on the web.
+
+<span id="wrap_object">wrap (an object)</span>
+:   To create a new object that delegates most operations to an existing object
+    while adding or modifying specific behavior,
+    such as wrapping a plain socket with a TLS layer.
 
 ## X
 

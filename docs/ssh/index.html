@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>SSH</title>
+<meta content="The Sudonomicon" name="description"/>
+<link href="../_static/favicon.ico" rel="icon" type="image/x-icon"/>
+<link href="../_static/pygments.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/page.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
+<nav aria-label="Site navigation">
+<a href="../">The Sudonomicon</a>
+<span aria-hidden="true">·</span>
+<div class="dropdown">
+<button aria-controls="nav-lessons" aria-haspopup="true">Lessons</button>
+<ul class="dropdown-content" id="nav-lessons">
+<li><a href="../intro/">Introduction</a></li>
+<li><a href="../fs/">The Filesystem</a></li>
+<li><a href="../proc/">Processes</a></li>
+<li><a href="../jobs/">Running Jobs</a></li>
+<li><a href="../logging/">Logging</a></li>
+<li><a href="../http/">HTTP</a></li>
+<li><a href="../auth/">Authentication</a></li>
+<li><a href="../var/">Shell Variables</a></li>
+<li><a href="../packenv/">Packages and Virtual Environments</a></li>
+<li><a href="../network/">Networking</a></li>
+<li><a href="../cert/">Certificates</a></li>
+<li><a class="active" href="../ssh/">SSH</a></li>
+<li><a href="../dock/">Virtualization</a></li>
+<li><a href="../finale/">Conclusion</a></li>
+</ul>
+</div>
+<span aria-hidden="true">·</span>
+<div class="dropdown">
+<button aria-controls="nav-appendices" aria-haspopup="true">Appendices</button>
+<ul class="dropdown-content" id="nav-appendices">
+<li><a href="../license/">License</a></li>
+<li><a href="../conduct/">Code of Conduct</a></li>
+<li><a href="../contributing/">Contributing</a></li>
+<li><a href="../bibliography/">Bibliography</a></li>
+<li><a href="../glossary/">Glossary</a></li>
+</ul>
+</div>
+</nav>
+<main id="main-content">
+<h1>SSH</h1>
+<h2>What Is SSH?</h2>
+<ul>
+<li><a href="../glossary/#ssh">SSH</a> (Secure Shell) is a protocol for logging into remote machines and running commands on them</li>
+<li>Runs over TCP port 22 by default</li>
+<li>Replaced older tools like <code>telnet</code> and <code>rsh</code> that sent everything as plain text</li>
+<li>Uses TLS-style encryption: all traffic between client and server is encrypted<ul>
+<li>See the <a href="../cert/">Certificates</a> chapter for background on public-key cryptography</li>
+</ul>
+</li>
+</ul>
+<h2>Connecting with a Password</h2>
+<ul>
+<li>Simplest way to connect:</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>$<span class="w"> </span>ssh<span class="w"> </span>tut@remote.example.com
+tut@remote.example.com<span class="err">'</span>s<span class="w"> </span>password:
+Last<span class="w"> </span>login:<span class="w"> </span>Mon<span class="w"> </span>Mar<span class="w">  </span><span class="m">3</span><span class="w"> </span><span class="m">09</span>:14:22<span class="w"> </span><span class="m">2026</span>
+tut@remote:~$
+</code></pre></div>
+<ul>
+<li>The shell prompt changes to show we are now on the remote machine</li>
+<li>Type <code>exit</code> or press Ctrl-D to close the connection</li>
+<li>Password authentication is convenient but has risks:<ul>
+<li>Weak passwords can be guessed by automated scanners</li>
+<li>Passwords can be captured if the user is tricked into connecting to the wrong host</li>
+<li>Most administrators disable it in favor of key-pair authentication</li>
+</ul>
+</li>
+</ul>
+<h2>Key-Pair Authentication</h2>
+<ul>
+<li>More secure alternative: generate a <a href="../glossary/#key_pair">key pair</a><ul>
+<li>A <a href="../glossary/#private_key">private key</a> that stays on your machine and is never shared</li>
+<li>A <a href="../glossary/#public_key">public key</a> that you copy to remote machines</li>
+</ul>
+</li>
+<li>When connecting, the server issues a <a href="../glossary/#auth_challenge">challenge</a> that only the holder of the private key can answer<ul>
+<li>The private key never travels over the network</li>
+</ul>
+</li>
+</ul>
+<h2>Generating a Key Pair</h2>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>$<span class="w"> </span>ssh-keygen<span class="w"> </span>-t<span class="w"> </span>ed25519<span class="w"> </span>-C<span class="w"> </span><span class="s2">"tut@example.com"</span>
+Generating<span class="w"> </span>public/private<span class="w"> </span>ed25519<span class="w"> </span>key<span class="w"> </span>pair.
+Enter<span class="w"> </span>file<span class="w"> </span><span class="k">in</span><span class="w"> </span>which<span class="w"> </span>to<span class="w"> </span>save<span class="w"> </span>the<span class="w"> </span>key<span class="w"> </span><span class="o">(</span>/Users/tut/.ssh/id_ed25519<span class="o">)</span>:
+Enter<span class="w"> </span>passphrase<span class="w"> </span><span class="o">(</span>empty<span class="w"> </span><span class="k">for</span><span class="w"> </span>no<span class="w"> </span>passphrase<span class="o">)</span>:
+Enter<span class="w"> </span>same<span class="w"> </span>passphrase<span class="w"> </span>again:
+Your<span class="w"> </span>identification<span class="w"> </span>has<span class="w"> </span>been<span class="w"> </span>saved<span class="w"> </span><span class="k">in</span><span class="w"> </span>/Users/tut/.ssh/id_ed25519
+Your<span class="w"> </span>public<span class="w"> </span>key<span class="w"> </span>has<span class="w"> </span>been<span class="w"> </span>saved<span class="w"> </span><span class="k">in</span><span class="w"> </span>/Users/tut/.ssh/id_ed25519.pub
+The<span class="w"> </span>key<span class="w"> </span>fingerprint<span class="w"> </span>is:
+SHA256:abc123xyz456...<span class="w"> </span>tut@example.com
+</code></pre></div>
+<ul>
+<li><code>ed25519</code> is a modern elliptic-curve algorithm; use it instead of the older <code>rsa</code></li>
+<li><code>-C</code> adds a comment to identify the key (conventionally your email address)</li>
+<li>The <a href="../glossary/#passphrase">passphrase</a> encrypts the private key on disk<ul>
+<li>If someone steals the file, they still cannot use the key without the passphrase</li>
+<li>An empty passphrase is convenient but less secure</li>
+</ul>
+</li>
+</ul>
+<h2>Copying the Public Key to a Server</h2>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>$<span class="w"> </span>ssh-copy-id<span class="w"> </span>tut@remote.example.com
+/usr/bin/ssh-copy-id:<span class="w"> </span>INFO:<span class="w"> </span>attempting<span class="w"> </span>to<span class="w"> </span>log<span class="w"> </span><span class="k">in</span><span class="w"> </span>with<span class="w"> </span>the<span class="w"> </span>new<span class="w"> </span>key<span class="o">(</span>s<span class="o">)</span>,<span class="w"> </span>to<span class="w"> </span>filter<span class="w"> </span>out<span class="w"> </span>any<span class="w"> </span>that<span class="w"> </span>are<span class="w"> </span>already<span class="w"> </span>installed
+tut@remote.example.com<span class="err">'</span>s<span class="w"> </span>password:
+Number<span class="w"> </span>of<span class="w"> </span>key<span class="o">(</span>s<span class="o">)</span><span class="w"> </span>added:<span class="w"> </span><span class="m">1</span>
+</code></pre></div>
+<ul>
+<li><code>ssh-copy-id</code> appends the public key to <code>~/.ssh/authorized_keys</code> on the remote machine</li>
+<li>After this, <code>ssh tut@remote.example.com</code> no longer asks for a password</li>
+</ul>
+<h2>Host Key Verification</h2>
+<ul>
+<li>The first time you connect to a new server, SSH shows its <a href="../glossary/#host_key">host key</a> fingerprint:</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="err">$</span><span class="w"> </span><span class="n">ssh</span><span class="w"> </span><span class="n">tut</span><span class="nv">@remote</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">com</span>
+<span class="n">The</span><span class="w"> </span><span class="n">authenticity</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="k">host</span><span class="w"> </span><span class="s1">'remote.example.com (203.0.113.5)'</span><span class="w"> </span><span class="n">can</span><span class="s1">'t be established.</span>
+<span class="s1">ED25519 key fingerprint is SHA256:abc123xyz456...</span>
+<span class="s1">Are you sure you want to continue connecting (yes/no/[fingerprint])? yes</span>
+<span class="s1">Warning: Permanently added '</span><span class="n">remote</span><span class="p">.</span><span class="n">example</span><span class="p">.</span><span class="n">com</span><span class="err">'</span><span class="w"> </span><span class="k">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="k">of</span><span class="w"> </span><span class="n">known</span><span class="w"> </span><span class="n">hosts</span><span class="p">.</span>
+</code></pre></div>
+<ul>
+<li>SSH stores the fingerprint in <code>~/.ssh/known_hosts</code></li>
+<li>If the fingerprint changes on a later connection, SSH refuses to connect<ul>
+<li>This protects against <a href="../glossary/#mitm_attack">man-in-the-middle attacks</a></li>
+<li>Could also mean the server was reinstalled — verify with the administrator before overriding</li>
+</ul>
+</li>
+</ul>
+<h2><code>ssh-agent</code></h2>
+<ul>
+<li>Typing the private key passphrase every time is tedious</li>
+<li><code>ssh-agent</code> holds decrypted keys in memory for the duration of a session</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>$<span class="w"> </span><span class="nb">eval</span><span class="w"> </span><span class="s2">"</span><span class="k">$(</span>ssh-agent<span class="w"> </span>-s<span class="k">)</span><span class="s2">"</span>
+Agent<span class="w"> </span>pid<span class="w"> </span><span class="m">12345</span>
+
+$<span class="w"> </span>ssh-add<span class="w"> </span>~/.ssh/id_ed25519
+Enter<span class="w"> </span>passphrase<span class="w"> </span><span class="k">for</span><span class="w"> </span>/Users/tut/.ssh/id_ed25519:
+Identity<span class="w"> </span>added:<span class="w"> </span>/Users/tut/.ssh/id_ed25519<span class="w"> </span><span class="o">(</span>tut@example.com<span class="o">)</span>
+</code></pre></div>
+<ul>
+<li><code>ssh-add</code> without arguments adds the default key (<code>~/.ssh/id_ed25519</code>)</li>
+<li>On macOS, keys are stored in the system Keychain automatically</li>
+</ul>
+<h2>The SSH Config File</h2>
+<ul>
+<li><code>~/.ssh/config</code> lets you define shortcuts for frequently used hosts:</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>Host myserver
+    HostName remote.example.com
+    User tut
+    IdentityFile ~/.ssh/id_ed25519
+    ForwardAgent yes
+</code></pre></div>
+<ul>
+<li><code>ssh myserver</code> now expands to <code>ssh -i ~/.ssh/id_ed25519 tut@remote.example.com</code></li>
+<li><code>ForwardAgent yes</code> passes your local <code>ssh-agent</code> through to the remote machine<ul>
+<li>Useful when the remote machine itself needs to connect to a third machine using your keys</li>
+</ul>
+</li>
+</ul>
+<h2>Copying Files</h2>
+<ul>
+<li><code>scp</code> copies files over an SSH connection — same syntax as <code>cp</code> but with a host prefix:</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>$<span class="w"> </span>scp<span class="w"> </span>local_data.csv<span class="w"> </span>tut@remote.example.com:~/data/
+
+$<span class="w"> </span>scp<span class="w"> </span>tut@remote.example.com:~/results/output.csv<span class="w"> </span>.
+</code></pre></div>
+<ul>
+<li><code>rsync</code> is more efficient for large or frequently updated files:<ul>
+<li>Only transfers the parts that changed</li>
+<li>Can resume interrupted transfers</li>
+</ul>
+</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>$<span class="w"> </span>rsync<span class="w"> </span>-avz<span class="w"> </span>data/<span class="w"> </span>tut@remote.example.com:~/data/
+</code></pre></div>
+<h2>SSH Tunnels</h2>
+<ul>
+<li>Sometimes a service is running on a remote machine but is not directly reachable<ul>
+<li>E.g., a database that accepts connections only from <code>localhost</code></li>
+</ul>
+</li>
+<li>Use local port forwarding to create a <a href="../glossary/#ssh_tunnel">tunnel</a>:</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>$<span class="w"> </span>ssh<span class="w"> </span>-L<span class="w"> </span><span class="m">5432</span>:localhost:5432<span class="w"> </span>tut@remote.example.com
+</code></pre></div>
+<ul>
+<li>This binds port 5432 on your local machine to port 5432 on the remote machine</li>
+<li>Connections to <code>localhost:5432</code> on your laptop go through the SSH connection to the remote machine</li>
+<li>Useful for database administration, Jupyter notebooks running on a cluster, etc.</li>
+</ul>
+<h2>Programmatic SSH with <code>paramiko</code></h2>
+<ul>
+<li><code>paramiko</code> is a Python library for SSH connections:</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">paramiko</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">paramiko</span><span class="o">.</span><span class="n">SSHClient</span><span class="p">()</span>
+<span class="n">client</span><span class="o">.</span><span class="n">load_system_host_keys</span><span class="p">()</span>
+<span class="n">client</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s2">"remote.example.com"</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="s2">"tut"</span><span class="p">)</span>
+
+<span class="n">stdin</span><span class="p">,</span> <span class="n">stdout</span><span class="p">,</span> <span class="n">stderr</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">exec_command</span><span class="p">(</span><span class="s2">"ls ~/data"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">stdout</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+<span class="n">client</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div>
+<ul>
+<li><code>load_system_host_keys()</code> reads <code>~/.ssh/known_hosts</code> to verify the server</li>
+<li>Use <code>paramiko.AutoAddPolicy()</code> only in trusted environments where you control the server</li>
+</ul>
+<section class="exercise">
+<h2>Exercise: Keys and Config</h2>
+<ol>
+<li>
+<p>Generate an <code>ed25519</code> key pair.
+    What are the permissions on <code>~/.ssh/id_ed25519</code>?
+    Why are those permissions necessary?</p>
+</li>
+<li>
+<p>Add an entry to <code>~/.ssh/config</code> for a machine you have access to
+    and verify that <code>ssh &lt;alias&gt;</code> connects without specifying a username or hostname.</p>
+</li>
+<li>
+<p>Use <code>scp</code> to copy a small file to a remote machine and back.
+    Then do the same with <code>rsync</code>.
+    What differences do you notice?</p>
+</li>
+</ol>
+</section>
+</main>
+<footer aria-label="Page navigation">
+<div class="row">
+<div class="col-3 left">
+<span aria-hidden="true">⇐</span> <a href="../cert/">Certificates</a>
+</div>
+<div class="col-6 center">
+<a href="../">The Sudonomicon</a>
+	  ©
+	  <a href="../#acknowledgments">the authors</a>
+</div>
+<div class="col-3 right">
+<a href="../dock/">Virtualization</a> <span aria-hidden="true">⇒</span>
+</div>
+</div>
+</footer>
+</body>
+</html>

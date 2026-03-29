@@ -24,7 +24,7 @@ ps -a -l
 ```
 ```{data-file="ps_a_l.out"}
   UID   PID  PPID        F CPU PRI NI        SZ    RSS       TTY       TIME CMD
-    0 13215 83470     4106   0  31  0 408655632   9504   ttys001    0:00.02 login -pfl gvwilson /
+    0 13215 83470     4106   0  31  0 408655632   9504   ttys001    0:00.02 login -pfl tut /
   501 13216 13215     4006   0  31  0 408795632   5424   ttys001    0:00.04 -bash
   501 13569 13216     4046   0  31  0 408895008  20864   ttys001    0:00.10 python -m http.server
     0 13577 13216     4106   0  31  0 408766128   1888   ttys001    0:00.01 ps -a -l
@@ -56,11 +56,11 @@ ps -a -l
 -   `pstree $$` to see [process tree](g:process_tree)
 
 ```{data-file="pstree.out"}
--+= 34628 gvwilson -bash
- |--= 38255 gvwilson emacs 03_proc/index.md
- |-+= 38697 gvwilson pstree 34628
+-+= 34628 tut -bash
+ |--= 38255 tut emacs 03_proc/index.md
+ |-+= 38697 tut pstree 34628
  | \--- 38699 root ps -axwwo user,pid,ppid,pgid,command
- \--- 38698 gvwilson pbcopy
+ \--- 38698 tut pbcopy
 ```
 
 ## Signals

@@ -6,8 +6,6 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>The Filesystem</title>
 <meta content="The Sudonomicon" name="description"/>
-<meta content="#f8f8f8" media="(prefers-color-scheme: light)" name="theme-color"/>
-<meta content="#1a1a1a" media="(prefers-color-scheme: dark)" name="theme-color"/>
 <link href="../_static/favicon.ico" rel="icon" type="image/x-icon"/>
 <link href="../_static/pygments.css" rel="stylesheet" type="text/css"/>
 <link href="../_static/page.css" rel="stylesheet" type="text/css"/>
@@ -17,33 +15,36 @@
 <nav aria-label="Site navigation">
 <a href="../">The Sudonomicon</a>
 <span aria-hidden="true">·</span>
-<span class="dropdown">
+<div class="dropdown">
 <button aria-controls="nav-lessons" aria-haspopup="true">Lessons</button>
-<ul class="dropdown-content" id="nav-lessons" role="list">
+<ul class="dropdown-content" id="nav-lessons">
 <li><a href="../intro/">Introduction</a></li>
 <li><a class="active" href="../fs/">The Filesystem</a></li>
 <li><a href="../proc/">Processes</a></li>
 <li><a href="../jobs/">Running Jobs</a></li>
+<li><a href="../logging/">Logging</a></li>
 <li><a href="../http/">HTTP</a></li>
 <li><a href="../auth/">Authentication</a></li>
 <li><a href="../var/">Shell Variables</a></li>
 <li><a href="../packenv/">Packages and Virtual Environments</a></li>
 <li><a href="../network/">Networking</a></li>
+<li><a href="../cert/">Certificates</a></li>
+<li><a href="../ssh/">SSH</a></li>
 <li><a href="../dock/">Virtualization</a></li>
 <li><a href="../finale/">Conclusion</a></li>
 </ul>
-</span>
+</div>
 <span aria-hidden="true">·</span>
-<span class="dropdown">
+<div class="dropdown">
 <button aria-controls="nav-appendices" aria-haspopup="true">Appendices</button>
-<ul class="dropdown-content" id="nav-appendices" role="list">
+<ul class="dropdown-content" id="nav-appendices">
 <li><a href="../license/">License</a></li>
 <li><a href="../conduct/">Code of Conduct</a></li>
 <li><a href="../contributing/">Contributing</a></li>
 <li><a href="../bibliography/">Bibliography</a></li>
 <li><a href="../glossary/">Glossary</a></li>
 </ul>
-</span>
+</div>
 </nav>
 <main id="main-content">
 <h1>The Filesystem</h1>
@@ -152,7 +153,12 @@
 </li>
 <li>Number of blocks<ul>
 <li>Each block is typically 4kbyte, but that may vary</li>
-<li>FIXME: why 8 blocks for bibliography which is only 174 bytes?</li>
+<li>174 bytes of data, but 8 blocks because filesystems allocate space in fixed-size units<ul>
+<li><code>ls -s</code> reports in 512-byte units; 8 × 512 = 4,096 bytes = one 4 KiB <a href="../glossary/#allocation_block">allocation block</a></li>
+<li>Even a 1-byte file uses one full block: the gap between bytes and blocks is <a href="../glossary/#internal_fragmentation">internal fragmentation</a></li>
+<li>A directory with thousands of tiny files wastes proportionally more space per byte than one with a few large files</li>
+</ul>
+</li>
 </ul>
 </li>
 <li>Permissions (discussed below)</li>
@@ -291,7 +297,7 @@ groups  nobody everyone localaccounts
 <div class="codehilite"><pre class="" tabindex="0"><span></span><code>$<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"original content"</span><span class="w"> </span>&gt;<span class="w"> </span>/tmp/somefile.txt
 
 $<span class="w"> </span>ls<span class="w"> </span>-l<span class="w"> </span>/tmp/somefile.txt
--rw-r--r--<span class="w">  </span><span class="m">1</span><span class="w"> </span>gvwilson<span class="w">  </span>staff<span class="w">  </span><span class="m">17</span><span class="w"> </span>Apr<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="m">16</span>:15<span class="w"> </span>/tmp/somefile.txt
+-rw-r--r--<span class="w">  </span><span class="m">1</span><span class="w"> </span>tut<span class="w">  </span>staff<span class="w">  </span><span class="m">17</span><span class="w"> </span>Apr<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="m">16</span>:15<span class="w"> </span>/tmp/somefile.txt
 
 $<span class="w"> </span>cat<span class="w"> </span>/tmp/somefile.txt
 original<span class="w"> </span>content
@@ -299,7 +305,7 @@ original<span class="w"> </span>content
 $<span class="w"> </span>chmod<span class="w"> </span><span class="nv">u</span><span class="o">=</span>,g<span class="o">=</span>,o<span class="o">=</span><span class="w"> </span>/tmp/somefile.txt
 
 $<span class="w"> </span>ls<span class="w"> </span>-l<span class="w"> </span>/tmp/somefile.txt
-----------<span class="w">  </span><span class="m">1</span><span class="w"> </span>gvwilson<span class="w">  </span>staff<span class="w">  </span><span class="m">17</span><span class="w"> </span>Apr<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="m">16</span>:15<span class="w"> </span>/tmp/somefile.txt
+----------<span class="w">  </span><span class="m">1</span><span class="w"> </span>tut<span class="w">  </span>staff<span class="w">  </span><span class="m">17</span><span class="w"> </span>Apr<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="m">16</span>:15<span class="w"> </span>/tmp/somefile.txt
 
 $<span class="w"> </span>cat<span class="w"> </span>/tmp/somefile.txt
 cat:<span class="w"> </span>/tmp/somefile.txt:<span class="w"> </span>Permission<span class="w"> </span>denied
@@ -312,7 +318,7 @@ $<span class="w"> </span>chmod<span class="w"> </span><span class="nv">u</span><
 $<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">"revised content"</span><span class="w"> </span>&gt;<span class="w"> </span>/tmp/somefile.txt
 
 $<span class="w"> </span>ls<span class="w"> </span>-l<span class="w"> </span>/tmp/somefile.txt
--rw-------<span class="w">  </span><span class="m">1</span><span class="w"> </span>gvwilson<span class="w">  </span>staff<span class="w">  </span><span class="m">16</span><span class="w"> </span>Apr<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="m">16</span>:15<span class="w"> </span>/tmp/somefile.txt
+-rw-------<span class="w">  </span><span class="m">1</span><span class="w"> </span>tut<span class="w">  </span>staff<span class="w">  </span><span class="m">16</span><span class="w"> </span>Apr<span class="w"> </span><span class="m">20</span><span class="w"> </span><span class="m">16</span>:15<span class="w"> </span>/tmp/somefile.txt
 
 $<span class="w"> </span>cat<span class="w"> </span>/tmp/somefile.txt
 revised<span class="w"> </span>content

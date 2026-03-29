@@ -6,8 +6,6 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Virtualization</title>
 <meta content="The Sudonomicon" name="description"/>
-<meta content="#f8f8f8" media="(prefers-color-scheme: light)" name="theme-color"/>
-<meta content="#1a1a1a" media="(prefers-color-scheme: dark)" name="theme-color"/>
 <link href="../_static/favicon.ico" rel="icon" type="image/x-icon"/>
 <link href="../_static/pygments.css" rel="stylesheet" type="text/css"/>
 <link href="../_static/page.css" rel="stylesheet" type="text/css"/>
@@ -17,33 +15,36 @@
 <nav aria-label="Site navigation">
 <a href="../">The Sudonomicon</a>
 <span aria-hidden="true">·</span>
-<span class="dropdown">
+<div class="dropdown">
 <button aria-controls="nav-lessons" aria-haspopup="true">Lessons</button>
-<ul class="dropdown-content" id="nav-lessons" role="list">
+<ul class="dropdown-content" id="nav-lessons">
 <li><a href="../intro/">Introduction</a></li>
 <li><a href="../fs/">The Filesystem</a></li>
 <li><a href="../proc/">Processes</a></li>
 <li><a href="../jobs/">Running Jobs</a></li>
+<li><a href="../logging/">Logging</a></li>
 <li><a href="../http/">HTTP</a></li>
 <li><a href="../auth/">Authentication</a></li>
 <li><a href="../var/">Shell Variables</a></li>
 <li><a href="../packenv/">Packages and Virtual Environments</a></li>
 <li><a href="../network/">Networking</a></li>
+<li><a href="../cert/">Certificates</a></li>
+<li><a href="../ssh/">SSH</a></li>
 <li><a class="active" href="../dock/">Virtualization</a></li>
 <li><a href="../finale/">Conclusion</a></li>
 </ul>
-</span>
+</div>
 <span aria-hidden="true">·</span>
-<span class="dropdown">
+<div class="dropdown">
 <button aria-controls="nav-appendices" aria-haspopup="true">Appendices</button>
-<ul class="dropdown-content" id="nav-appendices" role="list">
+<ul class="dropdown-content" id="nav-appendices">
 <li><a href="../license/">License</a></li>
 <li><a href="../conduct/">Code of Conduct</a></li>
 <li><a href="../contributing/">Contributing</a></li>
 <li><a href="../bibliography/">Bibliography</a></li>
 <li><a href="../glossary/">Glossary</a></li>
 </ul>
-</span>
+</div>
 </nav>
 <main id="main-content">
 <h1>Virtualization</h1>
@@ -51,64 +52,14 @@
 <li>FIXME</li>
 <li>See [<a href="../bibliography/#Stoneman2020">Stoneman2020</a>]</li>
 </ul>
-<h2>Virtual Environments</h2>
+<h2 class="aside">Beyond Python Virtual Environments</h2>
 <ul>
-<li>If two directories <code>A</code> and <code>B</code> contain a program <code>xyz</code>
-    and <code>A</code> comes before <code>B</code> in the user's <code>PATH</code>,
-    the command <code>xyz</code> will run <code>A/xyz</code> instead of <code>B/xyz</code></li>
-<li>This is how <a href="../glossary/#virtual_env">virtual environments</a> work</li>
-</ul>
-<div class="codehilite"><pre class="" tabindex="0"><span></span><code>echo $PATH | tr : '\n' | grep conda
-echo "python is" $(which python)
-</code></pre></div>
-<div class="codehilite"><pre class="" tabindex="0"><span></span><code>/Users/tut/conda/envs/sys/bin
-/Users/tut/conda/condabin
-python is /Users/tut/conda/envs/sys/bin/python
-</code></pre></div>
-<ul>
-<li>Virtual environment is initially a minimal Python installation</li>
-<li>Installing new packages puts them in the environment's directory</li>
-</ul>
-<h2>Package Installation</h2>
-<ol>
-<li>Create a new virtual environment called <code>example</code>: <code>conda create -n example python=3.12</code></li>
-<li>Activate that virtual environment: <code>conda activate example</code></li>
-<li>Install the <code>faker</code> package: <code>pip install faker</code></li>
-</ol>
-<div class="codehilite"><pre class="" tabindex="0"><span></span><code>find $HOME/conda/envs/example -name faker
-</code></pre></div>
-<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="o">/</span><span class="nx">Users</span><span class="o">/</span><span class="nx">tut</span><span class="o">/</span><span class="nx">conda</span><span class="o">/</span><span class="nx">envs</span><span class="o">/</span><span class="nx">example</span><span class="o">/</span><span class="nx">bin</span><span class="o">/</span><span class="nx">faker</span>
-<span class="o">/</span><span class="nx">Users</span><span class="o">/</span><span class="nx">tut</span><span class="o">/</span><span class="nx">conda</span><span class="o">/</span><span class="nx">envs</span><span class="o">/</span><span class="nx">example</span><span class="o">/</span><span class="nx">lib</span><span class="o">/</span><span class="nx">python3</span><span class="m m-Double">.12</span><span class="o">/</span><span class="nx">site</span><span class="o">-</span><span class="nx">packages</span><span class="o">/</span><span class="nx">faker</span>
-</code></pre></div>
-<ul>
-<li>The script in <code>bin</code> loads the module and runs it</li>
-</ul>
-<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="ch">#!/Users/gvwilson/conda/envs/example/bin/python3.12</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">faker.cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_from_command_line</span>
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">'(-script\.pyw|\.exe)?$'</span><span class="p">,</span> <span class="s1">''</span><span class="p">,</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">execute_from_command_line</span><span class="p">())</span>
-</code></pre></div>
-<ul>
-<li>The directory under <code>site-packages</code> has 642 Python files (as of version 24.3.0)</li>
-<li>The <code>python</code> in the virtual environment' <code>bin</code> directory
-    knows to look in that environment's <code>site-packages</code> directory</li>
-</ul>
-<section class="exercise">
-<h2>Exercise: Substitution</h2>
-<p>What is the <code>re.sub</code> call in the <code>faker</code> script doing and why?</p>
-</section>
-<h2 class="aside">Limits of Virtual Environments</h2>
-<ul>
-<li><code>conda</code> (and equivalents like <code>python -m venv</code>) work for Python</li>
+<li>Python virtual environments (covered in <a href="../packenv/">Packages and Virtual Environments</a>) isolate Python packages</li>
 <li>But what if you need an isolated environment for several languages at once?<ul>
 <li>Rust, JavaScript, and other languages all have their own solutions</li>
 </ul>
 </li>
-<li>And what if you want other people to be able to reproduce that environment?</li>
+<li>And what if you want other people to be able to reproduce the entire environment, not just the packages?</li>
 </ul>
 <h2>Docker</h2>
 <ul>
@@ -742,7 +693,7 @@ $
 <footer aria-label="Page navigation">
 <div class="row">
 <div class="col-3 left">
-<span aria-hidden="true">⇐</span> <a href="../network/">Networking</a>
+<span aria-hidden="true">⇐</span> <a href="../ssh/">SSH</a>
 </div>
 <div class="col-6 center">
 <a href="../">The Sudonomicon</a>

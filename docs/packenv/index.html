@@ -6,8 +6,6 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>Packages and Virtual Environments</title>
 <meta content="The Sudonomicon" name="description"/>
-<meta content="#f8f8f8" media="(prefers-color-scheme: light)" name="theme-color"/>
-<meta content="#1a1a1a" media="(prefers-color-scheme: dark)" name="theme-color"/>
 <link href="../_static/favicon.ico" rel="icon" type="image/x-icon"/>
 <link href="../_static/pygments.css" rel="stylesheet" type="text/css"/>
 <link href="../_static/page.css" rel="stylesheet" type="text/css"/>
@@ -17,39 +15,207 @@
 <nav aria-label="Site navigation">
 <a href="../">The Sudonomicon</a>
 <span aria-hidden="true">·</span>
-<span class="dropdown">
+<div class="dropdown">
 <button aria-controls="nav-lessons" aria-haspopup="true">Lessons</button>
-<ul class="dropdown-content" id="nav-lessons" role="list">
+<ul class="dropdown-content" id="nav-lessons">
 <li><a href="../intro/">Introduction</a></li>
 <li><a href="../fs/">The Filesystem</a></li>
 <li><a href="../proc/">Processes</a></li>
 <li><a href="../jobs/">Running Jobs</a></li>
+<li><a href="../logging/">Logging</a></li>
 <li><a href="../http/">HTTP</a></li>
 <li><a href="../auth/">Authentication</a></li>
 <li><a href="../var/">Shell Variables</a></li>
 <li><a class="active" href="../packenv/">Packages and Virtual Environments</a></li>
 <li><a href="../network/">Networking</a></li>
+<li><a href="../cert/">Certificates</a></li>
+<li><a href="../ssh/">SSH</a></li>
 <li><a href="../dock/">Virtualization</a></li>
 <li><a href="../finale/">Conclusion</a></li>
 </ul>
-</span>
+</div>
 <span aria-hidden="true">·</span>
-<span class="dropdown">
+<div class="dropdown">
 <button aria-controls="nav-appendices" aria-haspopup="true">Appendices</button>
-<ul class="dropdown-content" id="nav-appendices" role="list">
+<ul class="dropdown-content" id="nav-appendices">
 <li><a href="../license/">License</a></li>
 <li><a href="../conduct/">Code of Conduct</a></li>
 <li><a href="../contributing/">Contributing</a></li>
 <li><a href="../bibliography/">Bibliography</a></li>
 <li><a href="../glossary/">Glossary</a></li>
 </ul>
-</span>
+</div>
 </nav>
 <main id="main-content">
 <h1>Packages and Virtual Environments</h1>
+<h2>The Problem</h2>
 <ul>
-<li>FIXME: <a href="https://docs.astral.sh/uv/">uv</a> etc.</li>
+<li>Python ships with a standard library, but most real work needs third-party packages</li>
+<li>Installing packages globally causes <a href="../glossary/#dependency_conflict">dependency conflicts</a>:<ul>
+<li>Project A needs <code>requests==2.28</code>; project B needs <code>requests==2.31</code></li>
+<li>Only one version can live in the global <code>site-packages</code> directory at a time</li>
 </ul>
+</li>
+<li>Solution: give each project its own isolated Python environment</li>
+</ul>
+<h2><code>uv</code></h2>
+<ul>
+<li><a href="https://docs.astral.sh/uv/"><code>uv</code></a> is a fast Python package and project manager written in Rust</li>
+<li>Replaces <code>pip</code>, <code>pip-tools</code>, <code>virtualenv</code>, and parts of <code>conda</code> with a single tool</li>
+<li>Install once per machine:</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>curl -LsSf https://astral.sh/uv/install.sh | sh
+</code></pre></div>
+<ul>
+<li>Verify:</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>uv --version
+</code></pre></div>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>uv 0.4.18
+</code></pre></div>
+<h2>Creating a Project</h2>
+<ul>
+<li><code>uv init</code> creates a new project in the current directory (or a named subdirectory)</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>uv init birdcount
+cd birdcount
+ls -a
+</code></pre></div>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="err">.</span>
+<span class="nf">..</span>
+<span class="na">.python-version</span>
+<span class="nf">README.md</span>
+<span class="nf">hello.py</span>
+<span class="nf">pyproject.toml</span>
+</code></pre></div>
+<ul>
+<li><code>uv init</code> also runs <code>git init</code> and creates a <code>.gitignore</code></li>
+<li><code>.python-version</code> pins the Python version for this project</li>
+</ul>
+<h2><code>pyproject.toml</code></h2>
+<ul>
+<li><code>pyproject.toml</code> is the standard way to describe a Python project</li>
+<li><code>uv init</code> generates a minimal version:</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="k">[project]</span>
+<span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"birdcount"</span>
+<span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"0.1.0"</span>
+<span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Add your description here"</span>
+<span class="na">readme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"README.md"</span>
+<span class="na">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"&gt;=3.12"</span>
+<span class="na">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">[]</span>
+</code></pre></div>
+<ul>
+<li><code>[project]</code> table holds metadata</li>
+<li><code>dependencies</code> lists the packages this project needs (empty for now)</li>
+</ul>
+<h2>Adding Dependencies</h2>
+<ul>
+<li>Use <code>uv add</code> to add a package:</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>uv add requests
+</code></pre></div>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="nx">Resolved</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="nx">packages</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">234</span><span class="nx">ms</span>
+<span class="nx">Prepared</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="nx">packages</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="m m-Double">1.23</span><span class="nx">s</span>
+<span class="nx">Installed</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="nx">packages</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">89</span><span class="nx">ms</span>
+<span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">certifi</span><span class="o">==</span><span class="m m-Double">2024.8.30</span>
+<span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">charset</span><span class="o">-</span><span class="nx">normalizer</span><span class="o">==</span><span class="m m-Double">3.3.2</span>
+<span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">idna</span><span class="o">==</span><span class="m m-Double">3.10</span>
+<span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">requests</span><span class="o">==</span><span class="m m-Double">2.32.3</span>
+<span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">urllib3</span><span class="o">==</span><span class="m m-Double">2.2.3</span>
+</code></pre></div>
+<ul>
+<li><code>uv add</code> updates <code>pyproject.toml</code> and creates (or updates) <code>uv.lock</code></li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="k">[project]</span>
+<span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"birdcount"</span>
+<span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"0.1.0"</span>
+<span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"Add your description here"</span>
+<span class="na">readme</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"README.md"</span>
+<span class="na">requires-python</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"&gt;=3.12"</span>
+<span class="na">dependencies</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">[</span>
+<span class="w">    </span><span class="na">"requests&gt;</span><span class="o">=</span><span class="s">2.32.3",</span>
+<span class="na">]</span>
+</code></pre></div>
+<h2>The Lock File</h2>
+<ul>
+<li><code>uv.lock</code> records the exact version of every installed package (including transitive dependencies)</li>
+<li>Commit <code>uv.lock</code> to version control so teammates get identical environments</li>
+<li><code>pyproject.toml</code> says "I need <code>requests</code> 2.32 or newer"; <code>uv.lock</code> says "use <code>requests</code> 2.32.3 exactly"</li>
+</ul>
+<h2>Running Code</h2>
+<ul>
+<li>Use <code>uv run</code> to execute a script inside the project's environment:</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://example.com/birds.json"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"status: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>uv run python fetch_birds.py
+</code></pre></div>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="n">status</span><span class="o">:</span><span class="w"> </span><span class="mi">200</span>
+</code></pre></div>
+<ul>
+<li><code>uv run</code> creates the virtual environment in <code>.venv/</code> on the first run if it does not exist</li>
+<li>Never activate the virtual environment manually: <code>uv run</code> handles it</li>
+</ul>
+<h2>How the Virtual Environment Works</h2>
+<ul>
+<li><code>.venv/</code> contains a minimal Python installation and the project's installed packages</li>
+<li><code>uv run</code> prepends <code>.venv/bin</code> to <code>PATH</code> before executing the script<ul>
+<li>The Python interpreter and installed packages in <code>.venv/bin</code> shadow the system versions</li>
+</ul>
+</li>
+<li>This is the same mechanism described in the <a href="../var/">Shell Variables</a> chapter</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="n">uv</span> <span class="n">run</span> <span class="n">python</span> <span class="o">-</span><span class="n">c</span> <span class="s2">"import sys; print(sys.prefix)"</span>
+</code></pre></div>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>/Users/tut/birdcount/.venv
+</code></pre></div>
+<h2>Reproducing an Environment</h2>
+<ul>
+<li>A new collaborator clones the repository and runs:</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code>uv sync
+</code></pre></div>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="nx">Resolved</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="nx">packages</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">12</span><span class="nx">ms</span>
+<span class="nx">Installed</span><span class="w"> </span><span class="mi">5</span><span class="w"> </span><span class="nx">packages</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="mi">341</span><span class="nx">ms</span>
+<span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">certifi</span><span class="o">==</span><span class="m m-Double">2024.8.30</span>
+<span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">charset</span><span class="o">-</span><span class="nx">normalizer</span><span class="o">==</span><span class="m m-Double">3.3.2</span>
+<span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">idna</span><span class="o">==</span><span class="m m-Double">3.10</span>
+<span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">requests</span><span class="o">==</span><span class="m m-Double">2.32.3</span>
+<span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="nx">urllib3</span><span class="o">==</span><span class="m m-Double">2.2.3</span>
+</code></pre></div>
+<ul>
+<li><code>uv sync</code> reads <code>uv.lock</code> and installs exactly those versions</li>
+<li>No "works on my machine" surprises</li>
+</ul>
+<h2>Removing and Upgrading Dependencies</h2>
+<ul>
+<li>Remove a package: <code>uv remove requests</code></li>
+<li>Upgrade a package to the latest allowed version: <code>uv add --upgrade requests</code></li>
+<li>Upgrade all packages: <code>uv lock --upgrade</code></li>
+</ul>
+<section class="exercise">
+<h2>Exercise: First Project</h2>
+<ol>
+<li>
+<p>Create a new project called <code>weather</code> using <code>uv init</code>.</p>
+</li>
+<li>
+<p>Add <code>httpx</code> as a dependency and write a script that fetches any URL and prints its status code.</p>
+</li>
+<li>
+<p>Open <code>uv.lock</code> and find <code>httpx</code>.
+    How many packages were installed to satisfy that one dependency?</p>
+</li>
+<li>
+<p>What is in <code>.venv/bin</code>?
+    Why is there more than just Python there?</p>
+</li>
+</ol>
+</section>
 </main>
 <footer aria-label="Page navigation">
 <div class="row">

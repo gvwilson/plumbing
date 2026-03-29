@@ -6,8 +6,6 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <title>HTTP</title>
 <meta content="The Sudonomicon" name="description"/>
-<meta content="#f8f8f8" media="(prefers-color-scheme: light)" name="theme-color"/>
-<meta content="#1a1a1a" media="(prefers-color-scheme: dark)" name="theme-color"/>
 <link href="../_static/favicon.ico" rel="icon" type="image/x-icon"/>
 <link href="../_static/pygments.css" rel="stylesheet" type="text/css"/>
 <link href="../_static/page.css" rel="stylesheet" type="text/css"/>
@@ -17,39 +15,39 @@
 <nav aria-label="Site navigation">
 <a href="../">The Sudonomicon</a>
 <span aria-hidden="true">·</span>
-<span class="dropdown">
+<div class="dropdown">
 <button aria-controls="nav-lessons" aria-haspopup="true">Lessons</button>
-<ul class="dropdown-content" id="nav-lessons" role="list">
+<ul class="dropdown-content" id="nav-lessons">
 <li><a href="../intro/">Introduction</a></li>
 <li><a href="../fs/">The Filesystem</a></li>
 <li><a href="../proc/">Processes</a></li>
 <li><a href="../jobs/">Running Jobs</a></li>
+<li><a href="../logging/">Logging</a></li>
 <li><a class="active" href="../http/">HTTP</a></li>
 <li><a href="../auth/">Authentication</a></li>
 <li><a href="../var/">Shell Variables</a></li>
 <li><a href="../packenv/">Packages and Virtual Environments</a></li>
 <li><a href="../network/">Networking</a></li>
+<li><a href="../cert/">Certificates</a></li>
+<li><a href="../ssh/">SSH</a></li>
 <li><a href="../dock/">Virtualization</a></li>
 <li><a href="../finale/">Conclusion</a></li>
 </ul>
-</span>
+</div>
 <span aria-hidden="true">·</span>
-<span class="dropdown">
+<div class="dropdown">
 <button aria-controls="nav-appendices" aria-haspopup="true">Appendices</button>
-<ul class="dropdown-content" id="nav-appendices" role="list">
+<ul class="dropdown-content" id="nav-appendices">
 <li><a href="../license/">License</a></li>
 <li><a href="../conduct/">Code of Conduct</a></li>
 <li><a href="../contributing/">Contributing</a></li>
 <li><a href="../bibliography/">Bibliography</a></li>
 <li><a href="../glossary/">Glossary</a></li>
 </ul>
-</span>
+</div>
 </nav>
 <main id="main-content">
 <h1>HTTP</h1>
-<ul>
-<li>FIXME</li>
-</ul>
 <h2>Start with Something Simple</h2>
 <div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
@@ -563,39 +561,123 @@ What happens with each and why?</p>
 </li>
 <li>Then filter data as requested</li>
 </ul>
-<p><code>{data-file="bird_server_slice.py:filter"}
-    def filter_data(self):
-        params = parse_qs(urlparse(self.path).query)
-        result = self.server._data
-        if "species" in params:
-            species = params["species"][0]
-            result = result[result["species_id"] == species]
-        if "year" in params:
-            year = int(params["year"][0])
-            result = result[result["year"] == year]
-        return result</code></p>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="w">    </span><span class="n">def</span><span class="w"> </span><span class="n">filter_data</span><span class="p">(</span><span class="nb">self</span><span class="p">)</span><span class="o">:</span>
+<span class="w">        </span><span class="n">params</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">parse_qs</span><span class="p">(</span><span class="n">urlparse</span><span class="p">(</span><span class="nb">self</span><span class="p">.</span><span class="n">path</span><span class="p">).</span><span class="n">query</span><span class="p">)</span>
+<span class="w">        </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">self</span><span class="p">.</span><span class="n">server</span><span class="p">.</span><span class="n">_data</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="s">"species"</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">params</span><span class="o">:</span>
+<span class="w">            </span><span class="n">species</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">params</span><span class="p">[</span><span class="s">"species"</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+<span class="w">            </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="s">"species_id"</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">species</span><span class="p">]</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="s">"year"</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">params</span><span class="o">:</span>
+<span class="w">            </span><span class="n">year</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">int</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="s">"year"</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+<span class="w">            </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="p">[</span><span class="n">result</span><span class="p">[</span><span class="s">"year"</span><span class="p">]</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">year</span><span class="p">]</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span>
+<span class="w">    </span><span class="err">```</span>
+
+<span class="o">&lt;</span><span class="n">section</span><span class="w"> </span><span class="k">class</span><span class="o">=</span><span class="s">"exercise"</span><span class="w"> </span><span class="n">markdown</span><span class="o">=</span><span class="s">"1"</span><span class="o">&gt;</span>
+
+<span class="cp">## Exercise: Serving Data</span>
+
+<span class="mf">1.</span><span class="w">  </span><span class="n">Write</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">takes</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">URL</span><span class="w"> </span><span class="n">as</span><span class="w"> </span><span class="n">input</span>
+<span class="w">    </span><span class="n">and</span><span class="w"> </span><span class="n">returns</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">dictionary</span><span class="w"> </span><span class="n">whose</span><span class="w"> </span><span class="n">keys</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">query</span><span class="w"> </span><span class="n">parameters</span><span class="err">'</span><span class="w"> </span><span class="n">names</span>
+<span class="w">    </span><span class="n">and</span><span class="w"> </span><span class="n">whose</span><span class="w"> </span><span class="n">values</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">lists</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">their</span><span class="w"> </span><span class="n">values</span><span class="p">.</span>
+<span class="w">    </span><span class="n">Do</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="n">see</span><span class="w"> </span><span class="n">why</span><span class="w"> </span><span class="n">you</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="n">use</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">library</span><span class="w"> </span><span class="n">function</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="k">do</span><span class="w"> </span><span class="n">this</span><span class="o">?</span>
+
+<span class="mf">2.</span><span class="w">  </span><span class="n">Modify</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">clients</span><span class="w"> </span><span class="n">can</span><span class="w"> </span><span class="n">specify</span><span class="w"> </span><span class="n">which</span><span class="w"> </span><span class="n">columns</span><span class="w"> </span><span class="n">they</span><span class="w"> </span><span class="n">want</span><span class="w"> </span><span class="n">returned</span>
+<span class="w">    </span><span class="n">as</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">comma</span><span class="o">-</span><span class="n">separated</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">names</span><span class="p">.</span>
+<span class="w">    </span><span class="n">If</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="n">asks</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">column</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">doesn</span><span class="err">'</span><span class="n">t</span><span class="w"> </span><span class="n">exist</span><span class="p">,</span><span class="w"> </span><span class="n">ignore</span><span class="w"> </span><span class="n">it</span><span class="p">.</span>
+
+<span class="mf">1.</span><span class="w">  </span><span class="n">Modify</span><span class="w"> </span><span class="n">your</span><span class="w"> </span><span class="n">solution</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">previous</span><span class="w"> </span><span class="n">exercise</span><span class="w"> </span><span class="n">so</span><span class="w"> </span><span class="n">that</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="n">asks</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">column</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">doesn</span><span class="err">'</span><span class="n">t</span><span class="w"> </span><span class="n">exist</span>
+<span class="w">    </span><span class="n">the</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="n">returns</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="n">code</span><span class="w"> </span><span class="mi">400</span><span class="w"> </span><span class="p">(</span><span class="n">Bad</span><span class="w"> </span><span class="n">Request</span><span class="p">)</span>
+<span class="w">    </span><span class="n">and</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">JSON</span><span class="w"> </span><span class="n">blog</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">keys</span><span class="o">:</span>
+<span class="w">    </span><span class="err">`</span><span class="n">status_code</span><span class="err">`</span><span class="w"> </span><span class="p">(</span><span class="n">set</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="mi">400</span><span class="p">)</span>
+<span class="w">    </span><span class="n">and</span><span class="w"> </span><span class="err">`</span><span class="n">error_message</span><span class="err">`</span><span class="w"> </span><span class="p">(</span><span class="n">set</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">something</span><span class="w"> </span><span class="n">informative</span><span class="p">).</span>
+<span class="w">    </span><span class="n">Explain</span><span class="w"> </span><span class="n">why</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="n">should</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">JSON</span><span class="w"> </span><span class="n">rather</span><span class="w"> </span><span class="n">than</span><span class="w"> </span><span class="n">HTML</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="k">case</span><span class="w"> </span><span class="no">of</span><span class="w"> </span><span class="no">an</span><span class="w"> </span><span class="no">error</span><span class="p">.</span>
+
+<span class="o">&lt;/</span><span class="no">section</span><span class="o">&gt;</span>
+
+<span class="cp">## Why HTTP Is Not Enough</span>
+
+<span class="o">-</span><span class="w">   </span><span class="no">HTTP</span><span class="w"> </span><span class="no">sends</span><span class="w"> </span><span class="no">everything</span><span class="w"> </span><span class="no">as</span><span class="w"> </span><span class="no">plain</span><span class="w"> </span><span class="no">text</span>
+<span class="w">    </span><span class="o">-</span><span class="w">   </span><span class="no">Any</span><span class="w"> </span><span class="no">router</span><span class="w"> </span><span class="no">or</span><span class="w"> </span><span class="no">network</span><span class="w"> </span><span class="no">device</span><span class="w"> </span><span class="no">between</span><span class="w"> </span><span class="no">client</span><span class="w"> </span><span class="no">and</span><span class="w"> </span><span class="no">server</span><span class="w"> </span><span class="no">can</span><span class="w"> </span><span class="no">read</span><span class="w"> </span><span class="no">or</span><span class="w"> </span><span class="no">modify</span><span class="w"> </span><span class="no">data</span><span class="w"> </span><span class="no">in</span><span class="w"> </span><span class="no">transit</span>
+<span class="w">    </span><span class="o">-</span><span class="w">   </span><span class="no">This</span><span class="w"> </span><span class="no">is</span><span class="w"> </span><span class="no">called</span><span class="w"> </span><span class="no">a</span><span class="w"> </span><span class="p">[</span><span class="no">man</span><span class="o">-</span><span class="no">in</span><span class="o">-</span><span class="no">the</span><span class="o">-</span><span class="no">middle</span><span class="w"> </span><span class="no">attack</span><span class="p">](</span><span class="no">g</span><span class="p">:</span><span class="n">mitm_attack</span><span class="p">)</span>
+<span class="o">-</span><span class="w">   </span><span class="p">[</span><span class="n">HTTPS</span><span class="p">](</span><span class="n">g</span><span class="o">:</span><span class="n">https</span><span class="p">)</span><span class="w"> </span><span class="n">wraps</span><span class="w"> </span><span class="n">HTTP</span><span class="w"> </span><span class="n">inside</span><span class="w"> </span><span class="p">[</span><span class="n">TLS</span><span class="p">](</span><span class="n">g</span><span class="o">:</span><span class="n">tls</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">Transport</span><span class="w"> </span><span class="n">Layer</span><span class="w"> </span><span class="n">Security</span><span class="p">)</span>
+<span class="w">    </span><span class="o">-</span><span class="w">   </span><span class="n">Formerly</span><span class="w"> </span><span class="n">called</span><span class="w"> </span><span class="n">SSL</span><span class="p">;</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">two</span><span class="w"> </span><span class="n">terms</span><span class="w"> </span><span class="n">are</span><span class="w"> </span><span class="n">often</span><span class="w"> </span><span class="n">used</span><span class="w"> </span><span class="n">interchangeably</span>
+
+<span class="cp">## The TLS Handshake</span>
+
+<span class="o">-</span><span class="w">   </span><span class="n">Before</span><span class="w"> </span><span class="n">any</span><span class="w"> </span><span class="n">HTTP</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="n">flows</span><span class="p">,</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="n">negotiate</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">secure</span><span class="w"> </span><span class="n">channel</span>
+
+<span class="o">&lt;</span><span class="n">figure</span><span class="w"> </span><span class="kt">id</span><span class="o">=</span><span class="s">"f:http_tls_handshake"</span><span class="o">&gt;</span>
+<span class="w">  </span><span class="o">&lt;</span><span class="n">img</span><span class="w"> </span><span class="n">src</span><span class="o">=</span><span class="s">"tls_handshake.svg"</span><span class="w"> </span><span class="n">alt</span><span class="o">=</span><span class="s">"Steps in a TLS handshake"</span><span class="o">/&gt;</span>
+<span class="w">  </span><span class="o">&lt;</span><span class="n">figcaption</span><span class="o">&gt;</span><span class="n">Figure</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="n">The</span><span class="w"> </span><span class="n">TLS</span><span class="w"> </span><span class="n">handshake</span><span class="o">&lt;/</span><span class="n">figcaption</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">figure</span><span class="o">&gt;</span>
+
+<span class="o">-</span><span class="w">   </span><span class="n">Steps</span><span class="w"> </span><span class="p">(</span><span class="n">simplified</span><span class="p">)</span><span class="o">:</span>
+<span class="w">    </span><span class="mf">1.</span><span class="w">  </span><span class="n">Client</span><span class="w"> </span><span class="n">connects</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">says</span><span class="w"> </span><span class="s">"I want TLS"</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">lists</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">cipher</span><span class="w"> </span><span class="n">suites</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">supports</span>
+<span class="w">    </span><span class="mf">1.</span><span class="w">  </span><span class="n">Server</span><span class="w"> </span><span class="n">responds</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">its</span><span class="w"> </span><span class="p">[</span><span class="n">certificate</span><span class="p">](</span><span class="n">g</span><span class="o">:</span><span class="n">certificate</span><span class="p">)</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">chosen</span><span class="w"> </span><span class="n">cipher</span><span class="w"> </span><span class="n">suite</span>
+<span class="w">    </span><span class="mf">1.</span><span class="w">  </span><span class="n">Client</span><span class="w"> </span><span class="n">checks</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">certificate</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="kt">signed</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">trusted</span><span class="w"> </span><span class="p">[</span><span class="n">certificate</span><span class="w"> </span><span class="n">authority</span><span class="p">](</span><span class="n">g</span><span class="o">:</span><span class="n">certificate_authority</span><span class="p">)</span><span class="w"> </span><span class="p">(</span><span class="n">CA</span><span class="p">)</span>
+<span class="w">    </span><span class="mf">1.</span><span class="w">  </span><span class="n">Both</span><span class="w"> </span><span class="n">sides</span><span class="w"> </span><span class="n">derive</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">shared</span><span class="w"> </span><span class="p">[</span><span class="n">session</span><span class="w"> </span><span class="n">key</span><span class="p">](</span><span class="n">g</span><span class="o">:</span><span class="n">session_key</span><span class="p">)</span><span class="w"> </span><span class="n">using</span><span class="w"> </span><span class="n">public</span><span class="o">-</span><span class="n">key</span><span class="w"> </span><span class="n">cryptography</span>
+<span class="w">    </span><span class="mf">1.</span><span class="w">  </span><span class="n">All</span><span class="w"> </span><span class="n">subsequent</span><span class="w"> </span><span class="n">HTTP</span><span class="w"> </span><span class="n">traffic</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">encrypted</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">session</span><span class="w"> </span><span class="n">key</span>
+<span class="o">-</span><span class="w">   </span><span class="n">The</span><span class="w"> </span><span class="n">certificate</span><span class="w"> </span><span class="n">proves</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">server</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">who</span><span class="w"> </span><span class="n">it</span><span class="w"> </span><span class="n">claims</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">be</span>
+<span class="w">    </span><span class="o">-</span><span class="w">   </span><span class="n">Without</span><span class="w"> </span><span class="n">this</span><span class="p">,</span><span class="w"> </span><span class="n">an</span><span class="w"> </span><span class="n">attacker</span><span class="w"> </span><span class="n">could</span><span class="w"> </span><span class="n">intercept</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">impersonate</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">server</span>
+
+<span class="cp">## What Is a Certificate?</span>
+
+<span class="o">-</span><span class="w">   </span><span class="n">A</span><span class="w"> </span><span class="n">certificate</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">file</span><span class="w"> </span><span class="n">containing</span><span class="o">:</span>
+<span class="w">    </span><span class="o">-</span><span class="w">   </span><span class="n">The</span><span class="w"> </span><span class="n">server</span><span class="err">'</span><span class="n">s</span><span class="w"> </span><span class="n">public</span><span class="w"> </span><span class="n">key</span>
+<span class="w">    </span><span class="o">-</span><span class="w">   </span><span class="n">The</span><span class="w"> </span><span class="p">[</span><span class="n">subject</span><span class="p">](</span><span class="n">g</span><span class="o">:</span><span class="n">certificate_subject</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">domain</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">certificate</span><span class="w"> </span><span class="n">belongs</span><span class="w"> </span><span class="n">to</span>
+<span class="w">    </span><span class="o">-</span><span class="w">   </span><span class="n">Validity</span><span class="w"> </span><span class="n">dates</span><span class="w"> </span><span class="p">(</span><span class="n">not</span><span class="w"> </span><span class="n">before</span><span class="p">,</span><span class="w"> </span><span class="n">not</span><span class="w"> </span><span class="n">after</span><span class="p">)</span>
+<span class="w">    </span><span class="o">-</span><span class="w">   </span><span class="n">The</span><span class="w"> </span><span class="p">[</span><span class="n">issuer</span><span class="p">](</span><span class="n">g</span><span class="o">:</span><span class="n">certificate_issuer</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">CA</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="kt">signed</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">certificate</span>
+<span class="w">    </span><span class="o">-</span><span class="w">   </span><span class="n">A</span><span class="w"> </span><span class="n">digital</span><span class="w"> </span><span class="n">signature</span><span class="w"> </span><span class="n">from</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">issuer</span><span class="w"> </span><span class="n">that</span><span class="w"> </span><span class="n">ties</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">above</span><span class="w"> </span><span class="n">together</span>
+<span class="o">-</span><span class="w">   </span><span class="n">Browsers</span><span class="w"> </span><span class="n">and</span><span class="w"> </span><span class="n">operating</span><span class="w"> </span><span class="n">systems</span><span class="w"> </span><span class="n">ship</span><span class="w"> </span><span class="n">with</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="n">list</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">trusted</span><span class="w"> </span><span class="n">root</span><span class="w"> </span><span class="n">CAs</span>
+<span class="w">    </span><span class="o">-</span><span class="w">   </span><span class="n">If</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">certificate</span><span class="err">'</span><span class="n">s</span><span class="w"> </span><span class="n">chain</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">signatures</span><span class="w"> </span><span class="n">leads</span><span class="w"> </span><span class="n">back</span><span class="w"> </span><span class="n">to</span><span class="w"> </span><span class="n">one</span><span class="w"> </span><span class="n">of</span><span class="w"> </span><span class="n">those</span><span class="p">,</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="n">connection</span><span class="w"> </span><span class="n">is</span><span class="w"> </span><span class="n">trusted</span>
+<span class="o">-</span><span class="w">   </span><span class="n">See</span><span class="w"> </span><span class="n">the</span><span class="w"> </span><span class="p">[</span><span class="n">Certificates</span><span class="p">](@</span><span class="o">/</span><span class="n">cert</span><span class="o">/</span><span class="p">)</span><span class="w"> </span><span class="n">chapter</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="n">hands</span><span class="o">-</span><span class="n">on</span><span class="w"> </span><span class="n">certificate</span><span class="w"> </span><span class="n">creation</span>
+
+<span class="cp">## HTTPS with `requests`</span>
+
+<span class="o">-</span><span class="w">   </span><span class="err">`</span><span class="n">requests</span><span class="err">`</span><span class="w"> </span><span class="n">verifies</span><span class="w"> </span><span class="n">TLS</span><span class="w"> </span><span class="n">certificates</span><span class="w"> </span><span class="n">by</span><span class="w"> </span><span class="k">default</span><span class="w"> </span><span class="err">—</span><span class="w"> </span><span class="n">no</span><span class="w"> </span><span class="n">extra</span><span class="w"> </span><span class="n">work</span><span class="w"> </span><span class="n">needed</span>
+
+<span class="err">```</span><span class="p">{</span><span class="n">data</span><span class="o">-</span><span class="n">file</span><span class="o">=</span><span class="s">"get_https.py"</span><span class="p">}</span>
+<span class="n">import</span><span class="w"> </span><span class="n">requests</span>
+
+<span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">requests</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"https://example.com/"</span><span class="p">)</span>
+<span class="n">print</span><span class="p">(</span><span class="n">f</span><span class="s">"status code: {response.status_code}"</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li>To provide a custom CA bundle (needed when testing with a self-signed certificate):</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://localhost:4443/"</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="s2">"/path/to/ca.pem"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"status code: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li>To disable verification entirely — only ever do this in a throwaway test:</li>
+</ul>
+<div class="codehilite"><pre class="" tabindex="0"><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">urllib3</span>
+
+<span class="n">urllib3</span><span class="o">.</span><span class="n">disable_warnings</span><span class="p">(</span><span class="n">urllib3</span><span class="o">.</span><span class="n">exceptions</span><span class="o">.</span><span class="n">InsecureRequestWarning</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"https://localhost:4443/"</span><span class="p">,</span> <span class="n">verify</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"status code: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<ul>
+<li><code>requests</code> bundles <code>certifi</code>, a curated set of trusted root CAs<ul>
+<li>Used automatically; update with <code>uv add --upgrade certifi</code> if certificates stop validating</li>
+</ul>
+</li>
+</ul>
 <section class="exercise">
-<h2>Exercise: Serving Data</h2>
+<h2>Exercise: Certificate Errors</h2>
 <ol>
 <li>
-<p>Write a function that takes a URL as input
-    and returns a dictionary whose keys are the query parameters' names
-    and whose values are lists of their values.
-    Do you now see why you should use the library function to do this?</p>
+<p>What Python exception does <code>requests</code> raise when it cannot verify a server's certificate?
+    Write a short script that catches that specific exception and prints a useful error message.</p>
 </li>
 <li>
-<p>Modify the server so that clients can specify which columns they want returned
-    as a comma-separated list of names.
-    If the client asks for a column that doesn't exist, ignore it.</p>
-</li>
-<li>
-<p>Modify your solution to the previous exercise so that
-    if the client asks for a column that doesn't exist
-    the server returns a status code 400 (Bad Request)
-    and a JSON blog with two keys:
-    <code>status_code</code> (set to 400)
-    and <code>error_message</code> (set to something informative).
-    Explain why the server should return JSON rather than HTML in the case of an error.</p>
+<p>What does the <code>-k</code> flag do in <code>curl</code>?
+    Why would you not use it in a script that runs in production?</p>
 </li>
 </ol>
 </section>
@@ -603,7 +685,7 @@ What happens with each and why?</p>
 <footer aria-label="Page navigation">
 <div class="row">
 <div class="col-3 left">
-<span aria-hidden="true">⇐</span> <a href="../jobs/">Running Jobs</a>
+<span aria-hidden="true">⇐</span> <a href="../logging/">Logging</a>
 </div>
 <div class="col-6 center">
 <a href="../">The Sudonomicon</a>

@@ -3,72 +3,12 @@
 -   FIXME
 -   See [[](b:Stoneman2020)]
 
-## Virtual Environments
+## Beyond Python Virtual Environments {: .aside}
 
--   If two directories `A` and `B` contain a program `xyz`
-    and `A` comes before `B` in the user's `PATH`,
-    the command `xyz` will run `A/xyz` instead of `B/xyz`
--   This is how [virtual environments](g:virtual_env) work
-
-```{data-file="show_virtual_env.sh"}
-echo $PATH | tr : '\n' | grep conda
-echo "python is" $(which python)
-
-```
-```{data-file="show_virtual_env.out"}
-/Users/tut/conda/envs/sys/bin
-/Users/tut/conda/condabin
-python is /Users/tut/conda/envs/sys/bin/python
-```
-
--   Virtual environment is initially a minimal Python installation
--   Installing new packages puts them in the environment's directory
-
-## Package Installation
-
-1.  Create a new virtual environment called `example`: `conda create -n example python=3.12`
-2.  Activate that virtual environment: `conda activate example`
-3.  Install the `faker` package: `pip install faker`
-
-```{data-file="find_faker.sh"}
-find $HOME/conda/envs/example -name faker
-```
-```{data-file="find_faker.out"}
-/Users/tut/conda/envs/example/bin/faker
-/Users/tut/conda/envs/example/lib/python3.12/site-packages/faker
-```
-
--   The script in `bin` loads the module and runs it
-
-```{data-file="faker_bin.py"}
-#!/Users/gvwilson/conda/envs/example/bin/python3.12
-# -*- coding: utf-8 -*-
-import re
-import sys
-from faker.cli import execute_from_command_line
-if __name__ == '__main__':
-    sys.argv[0] = re.sub(r'(-script\.pyw|\.exe)?$', '', sys.argv[0])
-    sys.exit(execute_from_command_line())
-```
-
--   The directory under `site-packages` has 642 Python files (as of version 24.3.0)
--   The `python` in the virtual environment' `bin` directory
-    knows to look in that environment's `site-packages` directory
-
-<section class="exercise" markdown="1">
-
-## Exercise: Substitution
-
-What is the `re.sub` call in the `faker` script doing and why?
-
-</section>
-
-## Limits of Virtual Environments {: .aside}
-
--   `conda` (and equivalents like `python -m venv`) work for Python
+-   Python virtual environments (covered in [Packages and Virtual Environments](@/packenv/)) isolate Python packages
 -   But what if you need an isolated environment for several languages at once?
     -   Rust, JavaScript, and other languages all have their own solutions
--   And what if you want other people to be able to reproduce that environment?
+-   And what if you want other people to be able to reproduce the entire environment, not just the packages?
 
 ## Docker
 
